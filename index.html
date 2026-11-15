@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adzesua Connect — Technology for Learning</title>
+<meta name="description" content="Adzesua Connect is an education technology company building connectivity, digital identity and school management systems for schools in Ghana.">
+<meta property="og:title" content="Adzesua Connect — Technology for Learning">
+<meta property="og:description" content="Digital systems built for learning in Ghana.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 120 120%27%3E%3Crect width=%27120%27 height=%27120%27 rx=%2724%27 fill=%27%230B5B45%27/%3E%3Ccircle cx=%2754%27 cy=%2764%27 r=%2730%27 fill=%27none%27 stroke=%27%23F7F5EF%27 stroke-width=%2722%27/%3E%3Crect x=%2784%27 y=%2752%27 width=%2722%27 height=%2752%27 fill=%27%23F7F5EF%27/%3E%3Ccircle cx=%2796%27 cy=%2730%27 r=%2711%27 fill=%27%23F5B21A%27/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<style>
+body{margin:0;background:#F7F5EF}
+a{color:#0B5B45}a:hover{color:#2E9B6E}
+h1,h2,h3{text-wrap:balance}
+a:focus-visible,button:focus-visible{outline:3px solid #F5B21A;outline-offset:3px}
+@keyframes adz-signal{0%{opacity:.15;transform:scale(.92)}40%{opacity:1;transform:scale(1)}100%{opacity:.15;transform:scale(.92)}}
+@keyframes adz-pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+@keyframes adz-rise{from{transform:translateY(16px)}to{transform:translateY(0)}}
+@keyframes adz-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.adz-arc{transform-box:fill-box;transform-origin:50% 100%;animation:adz-signal 2.8s ease-in-out infinite}
+.adz-arc2{animation-delay:.35s}.adz-arc3{animation-delay:.7s}
+.adz-dot{transform-box:fill-box;transform-origin:center;animation:adz-pulse 2.8s ease-in-out infinite}
+.adz-rise{animation:adz-rise .9s cubic-bezier(.2,.7,.2,1) both}
+.adz-track{animation:adz-marquee 38s linear infinite}
+.adz-tile{transition:transform .25s ease,background .25s ease}
+.adz-tile:hover{transform:translateY(-3px)}
+.adz-row{transition:background .2s ease,padding .2s ease}
+.adz-row:hover{background:#EEF4EF}
+.adz-svc{transition:background .2s ease}
+.adz-svc:hover{background:#FFFFFF}
+@media (prefers-reduced-motion: reduce){.adz-arc,.adz-dot,.adz-rise,.adz-track{animation:none}.adz-tile,.adz-tile:hover{transition:none;transform:none}}
+</style>
+<style>html{scroll-behavior:smooth}section,header{scroll-margin-top:80px}</style>
+</head>
+<body>
+<div style="font-family: Inter, system-ui, sans-serif; color: #0F1A17; background: #F7F5EF; width: 100%; overflow: hidden">
+
+<!-- STICKY NAV -->
+<nav aria-label="Main" style="position: sticky; top: 0; z-index: 10; background: #0B5B45; border-bottom: 1px solid #1D6E57">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 16px 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px">
+    <a href="#top" style="display: flex; align-items: center; gap: 12px; text-decoration: none; color: #F7F5EF">
+      <svg role="img" aria-label="Adzesua Connect logo" width="40" height="40" viewBox="0 0 120 120"><circle cx="54" cy="64" r="30" fill="none" stroke="#F7F5EF" stroke-width="24"></circle><rect x="84" y="52" width="24" height="54" fill="#F7F5EF"></rect><circle cx="96" cy="30" r="11" fill="#F5B21A"></circle><path d="M76.2 14.2A28 28 0 0 1 115.8 14.2" fill="none" stroke="#F5B21A" stroke-width="7" stroke-linecap="round"></path></svg>
+      <span style="display: flex; flex-direction: column; gap: 2px">
+        <span style="font-family: Poppins, sans-serif; font-size: 20px; line-height: 1"><span style="font-weight: 700">Adzesua</span> <span style="font-weight: 400">Connect</span></span>
+        <span style="font-size: 12px; color: #DCEFE6; letter-spacing: 0.3px">Technology for Learning</span>
+      </span>
+    </a>
+    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 26px; font-size: 15px; font-weight: 500">
+      <a href="#belief" style="color: #DCEFE6; text-decoration: none">About</a>
+      <a href="#systems" style="color: #DCEFE6; text-decoration: none">Systems</a>
+      <a href="#services" style="color: #DCEFE6; text-decoration: none">Services</a>
+      <a href="#how" style="color: #DCEFE6; text-decoration: none">How we build</a>
+      <a href="#contact" style="background: #F5B21A; color: #0F1A17; text-decoration: none; font-weight: 600; padding: 11px 20px; border-radius: 999px">Contact us</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header id="top" style="background: #0B5B45; color: #F7F5EF; position: relative">
+  <svg aria-hidden="true" width="100%" height="100%" style="position: absolute; inset: 0; display: block; opacity: 0.35">
+    <defs>
+      <pattern id="adz-hero-tiles" width="96" height="96" patternUnits="userSpaceOnUse">
+        <circle cx="34" cy="52" r="15" fill="none" stroke="#1F7A5E" stroke-width="8"></circle>
+        <rect x="50" y="46" width="8" height="24" fill="#1F7A5E"></rect>
+        <circle cx="72" cy="26" r="5" fill="#1F7A5E"></circle>
+      </pattern>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#adz-hero-tiles)"></rect>
+  </svg>
+  <div style="position: relative; max-width: 1240px; margin: 0 auto; padding: 88px 32px 40px; display: flex; flex-wrap: wrap; align-items: center; gap: 40px">
+    <div class="adz-rise" style="flex: 1 1 600px; min-width: 0; display: flex; flex-direction: column; gap: 26px">
+      <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #F5B21A; letter-spacing: 1.5px">TECHNOLOGY MADE FOR HOW SCHOOLS WORK HERE</p>
+      <h1 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 800; font-size: clamp(46px, 6.6vw, 92px); line-height: 1; letter-spacing: -2.5px; color: #F7F5EF">Digital systems built for learning in Ghana.</h1>
+      <p style="margin: 0; font-size: 20px; line-height: 1.6; color: #DCEFE6; max-width: 34em">Adzesua Connect builds practical education technology: connectivity, digital identity and school management systems shaped by the realities of our classrooms.</p>
+    </div>
+    <div style="flex: 1 1 320px; min-width: 0; display: flex; justify-content: center">
+      <svg role="img" aria-label="The Adzesua mark sending out a signal" viewBox="0 0 120 120" style="width: 100%; max-width: 380px; height: auto; overflow: visible">
+        <circle cx="54" cy="64" r="30" fill="none" stroke="#F7F5EF" stroke-width="24"></circle>
+        <rect x="84" y="52" width="24" height="54" fill="#F7F5EF"></rect>
+        <circle class="adz-dot" cx="96" cy="30" r="11" fill="#F5B21A"></circle>
+        <path class="adz-arc" d="M76.2 14.2A28 28 0 0 1 115.8 14.2" fill="none" stroke="#F5B21A" stroke-width="5" stroke-linecap="round"></path>
+        <path class="adz-arc adz-arc2" d="M68.6 6.6A39 39 0 0 1 123.4 6.6" fill="none" stroke="#F5B21A" stroke-width="4" stroke-linecap="round" opacity="0.7"></path>
+        <path class="adz-arc adz-arc3" d="M61.2 -0.8A49 49 0 0 1 130.8 -0.8" fill="none" stroke="#F5B21A" stroke-width="3" stroke-linecap="round" opacity="0.45"></path>
+      </svg>
+    </div>
+  </div>
+
+  <!-- numbered CTA tiles -->
+  <div style="position: relative; max-width: 1240px; margin: 0 auto; padding: 0 32px 64px; display: flex; flex-wrap: wrap; gap: 16px; align-items: stretch">
+    <a href="#systems" class="adz-tile" style="flex: 1 1 320px; max-width: 440px; display: flex; align-items: center; gap: 18px; padding: 22px 24px; background: #F5B21A; color: #0F1A17; text-decoration: none; border-radius: 16px">
+      <span style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; opacity: 0.7">01</span>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 12px; letter-spacing: 1px; font-weight: 600; color: #3D300A">WHAT WE BUILD</span>
+        <span style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 19px">Explore our systems</span>
+      </span>
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#0F1A17" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+    </a>
+    <a href="#contact" class="adz-tile" style="flex: 1 1 320px; max-width: 440px; display: flex; align-items: center; gap: 18px; padding: 22px 24px; background: #0A4D3B; color: #F7F5EF; text-decoration: none; border-radius: 16px; border: 1px solid #2E9B6E">
+      <span style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #F5B21A">02</span>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 2px">
+        <span style="font-size: 12px; letter-spacing: 1px; font-weight: 600; color: #DCEFE6">BUILD WITH CONFIDENCE</span>
+        <span style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 19px">Partner with Adzesua</span>
+      </span>
+      <svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#F7F5EF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+    </a>
+  </div>
+</header>
+
+<!-- BELIEF / THESIS -->
+<section id="belief" style="max-width: 1240px; margin: 0 auto; padding: 112px 32px; display: flex; flex-wrap: wrap; gap: 56px">
+  <div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 20px">
+    <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #0B5B45; letter-spacing: 1.5px">THE ADZESUA BELIEF</p>
+    <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: clamp(34px, 4.4vw, 58px); line-height: 1.06; letter-spacing: -1.2px; color: #0F1A17">Learning should never wait on access.</h2>
+  </div>
+  <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px; padding-top: 8px">
+    <p style="margin: 0; font-size: 18px; line-height: 1.7; color: #24332E">Adzesua is the Fante word for learning. We start with the school day as it really is: how students get online, how records are kept, how parents stay informed.</p>
+    <p style="margin: 0; font-size: 18px; line-height: 1.7; color: #24332E">Then we build quietly. Simple on the surface, dependable underneath, and made to fit the schools that use it.</p>
+  </div>
+</section>
+
+<!-- WHO WE SERVE: index rows -->
+<section style="background: #FFFFFF; border-top: 1px solid #E4E8E2; border-bottom: 1px solid #E4E8E2">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 96px 32px; display: flex; flex-direction: column; gap: 40px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 24px">
+      <div style="display: flex; flex-direction: column; gap: 16px">
+        <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #0B5B45; letter-spacing: 1.5px">WHO WE SERVE</p>
+        <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 52px); line-height: 1.08; letter-spacing: -1px; color: #0F1A17; max-width: 14em">One school community. Every person in it.</h2>
+      </div>
+      <p style="margin: 0; font-size: 17px; line-height: 1.6; color: #3B4A45; max-width: 26em">Our systems are designed around the people who use them every day.</p>
+    </div>
+    <ul style="list-style: none; margin: 0; padding: 0; border-top: 1px solid #DCE3DE">
+      <li class="adz-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding: 26px 8px; border-bottom: 1px solid #DCE3DE">
+        <span style="width: 56px; font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #0B5B45">ST</span>
+        <span style="flex: 1 1 260px; font-family: Poppins, sans-serif; font-weight: 600; font-size: clamp(24px, 2.6vw, 34px); color: #0F1A17">Students</span>
+        <span style="flex: 1 1 320px; font-size: 16px; line-height: 1.6; color: #3B4A45">Access to the internet and the tools they need to learn.</span>
+      </li>
+      <li class="adz-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding: 26px 8px; border-bottom: 1px solid #DCE3DE">
+        <span style="width: 56px; font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #0B5B45">SC</span>
+        <span style="flex: 1 1 260px; font-family: Poppins, sans-serif; font-weight: 600; font-size: clamp(24px, 2.6vw, 34px); color: #0F1A17">Schools</span>
+        <span style="flex: 1 1 320px; font-size: 16px; line-height: 1.6; color: #3B4A45">Less paperwork and clearer records across the whole campus.</span>
+      </li>
+      <li class="adz-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding: 26px 8px; border-bottom: 1px solid #DCE3DE">
+        <span style="width: 56px; font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #0B5B45">TS</span>
+        <span style="flex: 1 1 260px; font-family: Poppins, sans-serif; font-weight: 600; font-size: clamp(24px, 2.6vw, 34px); color: #0F1A17">Teachers and staff</span>
+        <span style="flex: 1 1 320px; font-size: 16px; line-height: 1.6; color: #3B4A45">More time for teaching, less time on admin.</span>
+      </li>
+      <li class="adz-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding: 26px 8px; border-bottom: 1px solid #DCE3DE">
+        <span style="width: 56px; font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #0B5B45">PA</span>
+        <span style="flex: 1 1 260px; font-family: Poppins, sans-serif; font-weight: 600; font-size: clamp(24px, 2.6vw, 34px); color: #0F1A17">Parents</span>
+        <span style="flex: 1 1 320px; font-size: 16px; line-height: 1.6; color: #3B4A45">Confidence that their children are safe and supported.</span>
+      </li>
+      <li class="adz-row" style="display: flex; flex-wrap: wrap; align-items: center; gap: 24px; padding: 26px 8px; border-bottom: 1px solid #DCE3DE">
+        <span style="width: 56px; font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #0B5B45">EP</span>
+        <span style="flex: 1 1 260px; font-family: Poppins, sans-serif; font-weight: 600; font-size: clamp(24px, 2.6vw, 34px); color: #0F1A17">Education partners</span>
+        <span style="flex: 1 1 320px; font-size: 16px; line-height: 1.6; color: #3B4A45">A trusted technology partner for the education sector.</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<!-- SYSTEMS: indexed scope list -->
+<section id="systems" style="max-width: 1240px; margin: 0 auto; padding: 112px 32px; display: flex; flex-direction: column; gap: 48px">
+  <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 32px">
+    <div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #0B5B45; letter-spacing: 1.5px">OUR SYSTEMS</p>
+      <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 52px); line-height: 1.08; letter-spacing: -1px; color: #0F1A17">What we build, and where we are going.</h2>
+    </div>
+    <div style="flex: 0 1 380px; min-width: 0; background: #DCEFE6; border-radius: 16px; padding: 20px 22px; display: flex; flex-direction: column; gap: 6px">
+      <span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45; letter-spacing: 1px">A NOTE ON SCOPE</span>
+      <span style="font-size: 15px; line-height: 1.6; color: #24332E">Some systems are already in use. Others are in development and will be shared as they are ready.</span>
+    </div>
+  </div>
+
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px">
+    <article class="adz-tile" style="background: #0B5B45; color: #F7F5EF; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #DCEFE6">S / 01  Connectivity</span><span style="font-size: 12px; font-weight: 600; background: #F5B21A; color: #0F1A17; padding: 5px 11px; border-radius: 999px">In use</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #F7F5EF">Campus Wi-Fi</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #DCEFE6">Reliable, affordable internet for students across the school.</p>
+    </article>
+    <article class="adz-tile" style="background: #0B5B45; color: #F7F5EF; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #DCEFE6">S / 02  Identity</span><span style="font-size: 12px; font-weight: 600; background: #F5B21A; color: #0F1A17; padding: 5px 11px; border-radius: 999px">In use</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #F7F5EF">Smart student cards</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #DCEFE6">Secure NFC cards that give every student one digital identity on campus.</p>
+    </article>
+    <article class="adz-tile" style="background: #0B5B45; color: #F7F5EF; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #DCEFE6">S / 03  Administration</span><span style="font-size: 12px; font-weight: 600; background: #F5B21A; color: #0F1A17; padding: 5px 11px; border-radius: 999px">In use</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #F7F5EF">School management systems</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #DCEFE6">Student records, permissions and reports in one secure place, with parents kept informed.</p>
+    </article>
+    <article class="adz-tile" style="background: #FFFFFF; border: 1px solid #E4E8E2; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45">S / 04  Learning</span><span style="font-size: 12px; font-weight: 600; background: #DCEFE6; color: #0B5B45; padding: 5px 11px; border-radius: 999px">In development</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #0F1A17">Adzesua Learn</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B4A45">Digital learning resources for students, delivered over the school network.</p>
+    </article>
+    <article class="adz-tile" style="background: #FFFFFF; border: 1px solid #E4E8E2; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45">S / 05  Safety</span><span style="font-size: 12px; font-weight: 600; background: #DCEFE6; color: #0B5B45; padding: 5px 11px; border-radius: 999px">In development</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #0F1A17">Adzesua Safe</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B4A45">Tools that help schools look after the wellbeing and safety of students.</p>
+    </article>
+    <article class="adz-tile" style="background: #FFFFFF; border: 1px solid #E4E8E2; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45">S / 06  Teaching</span><span style="font-size: 12px; font-weight: 600; background: #DCEFE6; color: #0B5B45; padding: 5px 11px; border-radius: 999px">In development</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #0F1A17">Adzesua Teach</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B4A45">Digital tools that support teachers in and out of the classroom.</p>
+    </article>
+    <article class="adz-tile" style="background: #FFFFFF; border: 1px solid #E4E8E2; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45">S / 07  Readiness</span><span style="font-size: 12px; font-weight: 600; background: #DCEFE6; color: #0B5B45; padding: 5px 11px; border-radius: 999px">In development</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #0F1A17">Adzesua Skills</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B4A45">Practical digital skills that prepare young people for life after school.</p>
+    </article>
+    <article class="adz-tile" style="background: #FFFFFF; border: 1px solid #E4E8E2; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45">S / 08  Labs</span><span style="font-size: 12px; font-weight: 600; background: #DCEFE6; color: #0B5B45; padding: 5px 11px; border-radius: 999px">In development</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #0F1A17">Adzesua Labs</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B4A45">Connected computer and science spaces for hands-on learning.</p>
+    </article>
+    <article class="adz-tile" style="background: #FFFFFF; border: 1px solid #E4E8E2; border-radius: 20px; padding: 30px; display: flex; flex-direction: column; gap: 14px">
+      <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #0B5B45">S / 09  Platform</span><span style="font-size: 12px; font-weight: 600; background: #DCEFE6; color: #0B5B45; padding: 5px 11px; border-radius: 999px">In development</span></div>
+      <h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: 25px; color: #0F1A17">Adzesua Schools</h3>
+      <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #3B4A45">Everything we build, brought together as one platform for schools.</p>
+    </article>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services" style="background: #0F1A17; color: #F7F5EF">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 112px 32px; display: flex; flex-direction: column; gap: 48px">
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 32px">
+      <div style="flex: 1 1 560px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+        <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #F5B21A; letter-spacing: 1.5px">SERVICES FOR SCHOOLS</p>
+        <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 52px); line-height: 1.08; letter-spacing: -1px; color: #F7F5EF">Make technology work inside the school you already run.</h2>
+        <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #B9C9C2; max-width: 34em">From the first conversation to everyday use, we set up, train and support, so the technology keeps working long after launch.</p>
+      </div>
+      <a href="#contact" style="background: #F5B21A; color: #0F1A17; text-decoration: none; font-family: Poppins, sans-serif; font-weight: 600; font-size: 16px; padding: 16px 26px; border-radius: 999px">Discuss your school's needs</a>
+    </div>
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: #2A3833; border: 1px solid #2A3833; border-radius: 20px; overflow: hidden">
+      <div class="adz-svc" style="background: #0F1A17; padding: 30px; display: flex; flex-direction: column; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A">A / 01</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 20px; color: #F7F5EF">Needs assessment</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #B9C9C2">We learn how your school works before recommending anything.</p></div>
+      <div class="adz-svc" style="background: #0F1A17; padding: 30px; display: flex; flex-direction: column; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A">A / 02</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 20px; color: #F7F5EF">Setup and installation</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #B9C9C2">Networks, devices and software installed and ready to use.</p></div>
+      <div class="adz-svc" style="background: #0F1A17; padding: 30px; display: flex; flex-direction: column; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A">A / 03</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 20px; color: #F7F5EF">Custom school systems</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #B9C9C2">Software shaped around your school's own processes.</p></div>
+      <div class="adz-svc" style="background: #0F1A17; padding: 30px; display: flex; flex-direction: column; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A">A / 04</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 20px; color: #F7F5EF">Data and records</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #B9C9C2">Paper records moved into secure, searchable digital form.</p></div>
+      <div class="adz-svc" style="background: #0F1A17; padding: 30px; display: flex; flex-direction: column; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A">A / 05</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 20px; color: #F7F5EF">Staff training</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #B9C9C2">Hands-on training so every user is confident from day one.</p></div>
+      <div class="adz-svc" style="background: #0F1A17; padding: 30px; display: flex; flex-direction: column; gap: 12px"><span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A">A / 06</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 20px; color: #F7F5EF">Ongoing support</h3><p style="margin: 0; font-size: 15px; line-height: 1.6; color: #B9C9C2">A team that stays with you after launch.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div aria-hidden="true" style="background: #F5B21A; overflow: hidden; padding: 18px 0; white-space: nowrap">
+  <div class="adz-track" style="display: inline-flex; gap: 40px; font-family: Poppins, sans-serif; font-weight: 700; font-size: 22px; color: #0F1A17; letter-spacing: 1px">
+    <span>ACCESS</span><span>●</span><span>LEARNING</span><span>●</span><span>TRUST</span><span>●</span><span>CONNECTION</span><span>●</span><span>ACCESS</span><span>●</span><span>LEARNING</span><span>●</span><span>TRUST</span><span>●</span><span>CONNECTION</span><span>●</span>
+    <span>ACCESS</span><span>●</span><span>LEARNING</span><span>●</span><span>TRUST</span><span>●</span><span>CONNECTION</span><span>●</span><span>ACCESS</span><span>●</span><span>LEARNING</span><span>●</span><span>TRUST</span><span>●</span><span>CONNECTION</span><span>●</span>
+  </div>
+</div>
+
+<!-- FOUNDATION -->
+<section style="max-width: 1240px; margin: 0 auto; padding: 112px 32px; display: flex; flex-direction: column; gap: 48px">
+  <div style="display: flex; flex-direction: column; gap: 16px">
+    <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #0B5B45; letter-spacing: 1.5px">THE COMMON FOUNDATION</p>
+    <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: clamp(32px, 4vw, 52px); line-height: 1.08; letter-spacing: -1px; color: #0F1A17; max-width: 16em">Every system is built on the same four promises.</h2>
+  </div>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px">
+    <div style="border-top: 3px solid #0B5B45; padding-top: 22px; display: flex; flex-direction: column; gap: 10px"><span style="font-family: Poppins, sans-serif; font-weight: 800; font-size: 40px; color: #0B5B45; line-height: 1">01</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 22px; color: #0F1A17">Affordable</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3B4A45">Priced for students, parents and schools.</p></div>
+    <div style="border-top: 3px solid #0B5B45; padding-top: 22px; display: flex; flex-direction: column; gap: 10px"><span style="font-family: Poppins, sans-serif; font-weight: 800; font-size: 40px; color: #0B5B45; line-height: 1">02</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 22px; color: #0F1A17">Simple</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3B4A45">Easy for anyone on campus to use from day one.</p></div>
+    <div style="border-top: 3px solid #0B5B45; padding-top: 22px; display: flex; flex-direction: column; gap: 10px"><span style="font-family: Poppins, sans-serif; font-weight: 800; font-size: 40px; color: #0B5B45; line-height: 1">03</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 22px; color: #0F1A17">Secure</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3B4A45">Student information protected, seen only by the right people.</p></div>
+    <div style="border-top: 3px solid #F5B21A; padding-top: 22px; display: flex; flex-direction: column; gap: 10px"><span style="font-family: Poppins, sans-serif; font-weight: 800; font-size: 40px; color: #0B5B45; line-height: 1">04</span><h3 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 22px; color: #0F1A17">Connected</h3><p style="margin: 0; font-size: 16px; line-height: 1.6; color: #3B4A45">Every system shares one record, so the school works as one.</p></div>
+  </div>
+</section>
+
+<!-- HOW WE BUILD -->
+<section id="how" style="background: #DCEFE6">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 112px 32px; display: flex; flex-wrap: wrap; gap: 56px">
+    <div style="flex: 1 1 480px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #0B5B45; letter-spacing: 1.5px">HOW WE BUILD</p>
+      <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 700; font-size: clamp(34px, 4.4vw, 58px); line-height: 1.06; letter-spacing: -1.2px; color: #0B5B45">Built with schools. Proven before it is shared.</h2>
+    </div>
+    <div style="flex: 1 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 18px; padding-top: 8px">
+      <p style="margin: 0; font-size: 18px; line-height: 1.7; color: #24332E">Every system is tested with real students and staff before it reaches another school.</p>
+      <p style="margin: 0; font-size: 18px; line-height: 1.7; color: #24332E">We share what is ready, refine what is still being proven, and open deeper conversations with the schools and partners who want to build with us.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contact" style="max-width: 1240px; margin: 0 auto; padding: 112px 32px">
+  <div style="display: flex; flex-wrap: wrap; gap: 40px; align-items: center; justify-content: space-between">
+    <div style="flex: 1 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+      <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 600; font-size: 14px; color: #0B5B45; letter-spacing: 1.5px">BUILD WITH ADZESUA</p>
+      <h2 style="margin: 0; font-family: Poppins, sans-serif; font-weight: 800; font-size: clamp(34px, 4.6vw, 62px); line-height: 1.04; letter-spacing: -1.4px; color: #0F1A17">Have a school, a community or an idea?</h2>
+      <p style="margin: 0; font-size: 18px; line-height: 1.6; color: #3B4A45; max-width: 30em">Let's design the right technology around the people who will use it.</p>
+    </div>
+    <a href="#footer" class="adz-tile" style="flex: 0 1 400px; display: flex; align-items: center; gap: 18px; padding: 28px; background: #0B5B45; color: #F7F5EF; text-decoration: none; border-radius: 20px">
+      <span style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 15px; color: #F5B21A">03</span>
+      <span style="flex: 1; display: flex; flex-direction: column; gap: 4px">
+        <span style="font-size: 12px; letter-spacing: 1px; font-weight: 600; color: #DCEFE6">A DIRECT LINE TO ADZESUA</span>
+        <span style="font-family: Poppins, sans-serif; font-weight: 700; font-size: 22px">Start a conversation</span>
+      </span>
+      <svg aria-hidden="true" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#F5B21A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="M13 6l6 6-6 6"></path></svg>
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer" style="background: #0B5B45; color: #DCEFE6">
+  <div style="max-width: 1240px; margin: 0 auto; padding: 88px 32px 40px; display: flex; flex-direction: column; gap: 64px">
+    <div style="display: flex; flex-wrap: wrap; gap: 48px; justify-content: space-between">
+      <div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 18px">
+        <div style="display: flex; align-items: center; gap: 12px">
+          <svg role="img" aria-label="Adzesua Connect logo" width="52" height="52" viewBox="0 0 120 120"><circle cx="54" cy="64" r="30" fill="none" stroke="#F7F5EF" stroke-width="24"></circle><rect x="84" y="52" width="24" height="54" fill="#F7F5EF"></rect><circle cx="96" cy="30" r="11" fill="#F5B21A"></circle><path d="M76.2 14.2A28 28 0 0 1 115.8 14.2" fill="none" stroke="#F5B21A" stroke-width="7" stroke-linecap="round"></path></svg>
+          <span style="font-family: Poppins, sans-serif; font-size: 26px; color: #F7F5EF"><span style="font-weight: 700">Adzesua</span> <span style="font-weight: 400">Connect</span></span>
+        </div>
+        <p style="margin: 0; font-size: 15px; line-height: 1.6; color: #DCEFE6; max-width: 26em">An education technology company building connectivity, identity and management systems for schools.</p>
+      </div>
+      <div style="flex: 1 1 240px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A; letter-spacing: 1px">CONTACT</span>
+        <span style="font-family: Poppins, sans-serif; font-size: 20px; color: #F7F5EF">[YOUR EMAIL]</span>
+        <span style="font-size: 15px; color: #DCEFE6">[YOUR PHONE NUMBER]</span>
+        <span style="font-size: 15px; line-height: 1.6; color: #DCEFE6">Schools, partners and opportunities across Ghana.</span>
+      </div>
+      <div style="flex: 1 1 200px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A; letter-spacing: 1px">OFFICE</span>
+        <span style="font-family: Poppins, sans-serif; font-size: 18px; color: #F7F5EF">Agona Swedru</span>
+        <span style="font-size: 15px; color: #DCEFE6">Central Region, Ghana</span>
+      </div>
+      <div style="flex: 1 1 160px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+        <span style="font-family: Poppins, sans-serif; font-weight: 600; font-size: 13px; color: #F5B21A; letter-spacing: 1px">EXPLORE</span>
+        <a href="#belief" style="color: #F7F5EF; text-decoration: none; font-size: 15px">About</a>
+        <a href="#systems" style="color: #F7F5EF; text-decoration: none; font-size: 15px">Systems</a>
+        <a href="#services" style="color: #F7F5EF; text-decoration: none; font-size: 15px">Services</a>
+        <a href="#contact" style="color: #F7F5EF; text-decoration: none; font-size: 15px">Partner with us</a>
+      </div>
+    </div>
+    <p style="margin: 0; font-family: Poppins, sans-serif; font-weight: 800; font-size: clamp(36px, 7vw, 104px); line-height: 0.95; letter-spacing: -3px; color: #F7F5EF">Technology for Learning<span style="color: #F5B21A">.</span></p>
+    <div style="display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; padding-top: 24px; border-top: 1px solid #2E7A62; font-size: 14px; color: #DCEFE6">
+      <span>© 2026 Adzesua Connect Limited</span>
+      <span>Adzesua is the Fante word for learning</span>
+    </div>
+  </div>
+</footer>
+
+</div>
+</body>
+</html>
