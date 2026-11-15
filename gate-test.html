@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adzesua Smart Card — Gate Test</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600&display=swap">
+<style>
+:root{
+  --green:#0B5B45; --gold:#F5B21A; --ink:#0F1A17; --chalk:#F7F5EF; --leaf:#2E9B6E; --mist:#DCEFE6;
+  --red:#B42318; --redbg:#FDECEA; --line:#E1E6E2; --muted:#4A5853;
+  --display:Poppins,system-ui,sans-serif; --body:Inter,system-ui,sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--chalk);color:var(--ink);font-family:var(--body)}
+button{font:inherit}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+header{background:var(--green);color:var(--chalk);padding:16px 18px;display:flex;align-items:center;gap:10px}
+header .name{font-family:var(--display);font-size:18px;line-height:1.1}
+header .sub{font-size:12px;color:var(--mist)}
+nav{display:flex;background:var(--green);padding:0 10px 10px;gap:6px;overflow-x:auto}
+nav button{flex:1;min-height:44px;border:0;border-radius:12px;background:#0A4D3B;color:var(--mist);font-family:var(--display);font-weight:600;font-size:14px;padding:0 10px;white-space:nowrap}
+nav button[aria-selected="true"]{background:var(--gold);color:var(--ink)}
+main{max-width:560px;margin:0 auto;padding:18px 16px 60px;display:flex;flex-direction:column;gap:16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;display:flex;flex-direction:column;gap:12px}
+h2{margin:0;font-family:var(--display);font-size:20px}
+p{margin:0;line-height:1.55}
+.muted{color:var(--muted);font-size:14px}
+.btn{min-height:48px;border:0;border-radius:999px;padding:0 22px;font-family:var(--display);font-weight:600;font-size:16px;cursor:pointer}
+.btn-gold{background:var(--gold);color:var(--ink)}
+.btn-green{background:var(--green);color:var(--chalk)}
+.btn-ghost{background:transparent;border:2px solid var(--green);color:var(--green)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.scan{background:var(--green);color:var(--chalk);border-radius:22px;padding:26px 20px;text-align:center;display:flex;flex-direction:column;gap:14px;align-items:center}
+.scan .ring{width:110px;height:110px;border-radius:50%;border:4px solid var(--gold);display:flex;align-items:center;justify-content:center;position:relative}
+.scan.on .ring::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:4px solid var(--gold);animation:ping 1.6s ease-out infinite}
+@keyframes ping{from{transform:scale(1);opacity:.8}to{transform:scale(1.5);opacity:0}}
+@media (prefers-reduced-motion:reduce){.scan.on .ring::after{animation:none}}
+.scan h2{color:var(--chalk)}
+.scan p{color:var(--mist)}
+.result{border-radius:20px;padding:20px;display:flex;flex-direction:column;gap:10px;border:2px solid}
+.result.ok{background:#E7F6EE;border-color:var(--leaf)}
+.result.back{background:var(--mist);border-color:var(--green)}
+.result.stop{background:var(--redbg);border-color:var(--red)}
+.verdict{font-family:var(--display);font-weight:800;font-size:28px;line-height:1.1}
+.ok .verdict{color:var(--green)} .back .verdict{color:var(--green)} .stop .verdict{color:var(--red)}
+.who{display:flex;gap:14px;align-items:center}
+.avatar{width:56px;height:56px;border-radius:16px;background:var(--green);color:var(--chalk);font-family:var(--display);font-weight:700;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none}
+.who .n{font-family:var(--display);font-weight:700;font-size:19px}
+.sms{background:var(--ink);color:var(--chalk);border-radius:14px;padding:14px;font-size:14px;line-height:1.5}
+.sms b{color:var(--gold);font-family:var(--display);font-size:12px;display:block;margin-bottom:4px}
+.uid{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:13px;background:var(--chalk);border-radius:8px;padding:2px 7px}
+.list{display:flex;flex-direction:column}
+.item{display:flex;gap:12px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.item:last-child{border-bottom:0}
+.item .grow{flex:1;min-width:0}
+.pill{font-size:12px;font-weight:600;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.pill.ap{background:#E7F6EE;color:var(--green)} .pill.out{background:#FFF3D6;color:#6B4B00} .pill.none{background:#EEF0EE;color:var(--muted)}
+.switch{min-height:44px;padding:0 14px;border-radius:12px;border:2px solid var(--green);background:#fff;color:var(--green);font-weight:600;font-size:13px;cursor:pointer}
+label{font-weight:600;font-size:14px}
+select,input{min-height:46px;border:1px solid #C9D2CC;border-radius:12px;padding:0 12px;font:inherit;font-size:16px;width:100%;background:#fff;color:var(--ink)}
+.warn{background:#FFF3D6;border:1px solid #F0D18A;color:#5A4100;border-radius:14px;padding:14px;font-size:14px;line-height:1.5}
+.log{font-size:14px}
+.log .t{color:var(--muted);font-size:12px}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <svg role="img" aria-label="Adzesua Connect logo" width="36" height="36" viewBox="0 0 120 120"><circle cx="54" cy="64" r="30" fill="none" stroke="#F7F5EF" stroke-width="24"/><rect x="84" y="52" width="24" height="54" fill="#F7F5EF"/><circle cx="96" cy="30" r="11" fill="#F5B21A"/><path d="M76.2 14.2A28 28 0 0 1 115.8 14.2" fill="none" stroke="#F5B21A" stroke-width="7" stroke-linecap="round"/></svg>
+  <div><div class="name"><b>Adzesua</b> Connect</div><div class="sub">Smart Card gate test (demo data only)</div></div>
+</header>
+<nav role="tablist" aria-label="Sections">
+  <button role="tab" id="tab-gate" aria-selected="true" data-view="gate">Gate</button>
+  <button role="tab" id="tab-register" aria-selected="false" data-view="register">Register card</button>
+  <button role="tab" id="tab-students" aria-selected="false" data-view="students">Exeats</button>
+  <button role="tab" id="tab-log" aria-selected="false" data-view="log">Log</button>
+</nav>
+
+<main>
+  <div id="nfc-warn" class="warn" hidden>This browser can't read NFC. Open this page in <b>Chrome on an Android phone</b> with NFC switched on. You can still try the flow below with “Simulate a tap”.</div>
+
+  <!-- GATE -->
+  <section id="view-gate" class="view" style="display:flex;flex-direction:column;gap:16px">
+    <div id="scan" class="scan">
+      <div class="ring"><svg aria-hidden="true" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#F5B21A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M14 10a3 3 0 0 1 0 4"/><path d="M16.5 8.5a6 6 0 0 1 0 7"/></svg></div>
+      <h2 id="scan-title">Gate reader is off</h2>
+      <p id="scan-text">Start the reader, then hold a student card against the back of the phone.</p>
+      <button id="start" class="btn btn-gold" type="button">Start gate reader</button>
+    </div>
+    <div id="result" aria-live="polite"></div>
+    <div class="card">
+      <label for="sim-uid">Simulate a tap (no NFC needed)</label>
+      <div class="row">
+        <select id="sim-uid"></select>
+        <button id="sim-btn" class="btn btn-ghost" type="button">Tap</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTER -->
+  <section id="view-register" class="view" hidden style="flex-direction:column;gap:16px">
+    <div class="card">
+      <h2>Link a blank card to a student</h2>
+      <p class="muted">Choose a demo student, press the button, then tap the card. The page saves the card's serial number against the student and writes the student ID onto the card.</p>
+      <label for="reg-student">Student</label>
+      <select id="reg-student"></select>
+      <button id="reg-btn" class="btn btn-green" type="button">Link next card tapped</button>
+      <p id="reg-status" class="muted" aria-live="polite"></p>
+    </div>
+  </section>
+
+  <!-- STUDENTS / EXEATS -->
+  <section id="view-students" class="view" hidden style="flex-direction:column;gap:16px">
+    <div class="card">
+      <h2>Exeats (housemaster view)</h2>
+      <p class="muted">Approve or cancel an exeat here, then go to the Gate and tap the student's card.</p>
+      <div id="students" class="list"></div>
+    </div>
+    <button id="reset" class="btn btn-ghost" type="button">Reset demo data</button>
+  </section>
+
+  <!-- LOG -->
+  <section id="view-log" class="view" hidden style="flex-direction:column;gap:16px">
+    <div class="card">
+      <h2>Gate activity</h2>
+      <div id="log" class="list log"></div>
+    </div>
+  </section>
+</main>
+
+<script>
+(function(){
+  var KEY='adz-gate-demo-v1';
+  var DEFAULT={
+    students:[
+      {id:'ADZ-0001',name:'Kofi Mensah',form:'Form 2 Science',house:'House 1',parent:'Mr Mensah',uid:'c7:3a:9f:50',exeat:'approved',reason:'Medical visit',due:'Sunday, 6:00 pm'},
+      {id:'ADZ-0002',name:'Ama Owusu',form:'Form 3 Business',house:'House 4',parent:'Mrs Owusu',uid:'',exeat:'none',reason:'',due:''},
+      {id:'ADZ-0003',name:'Yaw Boateng',form:'Form 1 General Arts',house:'House 2',parent:'Mr Boateng',uid:'',exeat:'none',reason:'',due:''},
+      {id:'ADZ-0004',name:'Efua Asante',form:'Form 2 Home Economics',house:'House 3',parent:'Mrs Asante',uid:'',exeat:'approved',reason:'Family event',due:'Monday, 5:00 pm'}
+    ],
+    log:[]
+  };
+  var mem=null;
+  function load(){try{var s=localStorage.getItem(KEY);if(s)return JSON.parse(s);}catch(e){} return mem||JSON.parse(JSON.stringify(DEFAULT));}
+  function save(){mem=db;try{localStorage.setItem(KEY,JSON.stringify(db));}catch(e){}}
+  var db=load();
+
+  var $=function(id){return document.getElementById(id)};
+  function esc(s){return String(s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function initials(n){return n.split(' ').map(function(p){return p[0]}).join('').slice(0,2)}
+  function now(){var d=new Date();return d.toLocaleString([], {weekday:'short',hour:'2-digit',minute:'2-digit'})}
+  function normUid(u){return String(u||'').toLowerCase().replace(/[^0-9a-f]/g,'').match(/.{1,2}/g)?.join(':')||''}
+
+  /* tabs */
+  var tabs=document.querySelectorAll('nav button');
+  tabs.forEach(function(b){b.addEventListener('click',function(){show(b.dataset.view)})});
+  function show(v){
+    tabs.forEach(function(b){b.setAttribute('aria-selected',b.dataset.view===v?'true':'false')});
+    document.querySelectorAll('.view').forEach(function(s){var on=s.id==='view-'+v;s.hidden=!on;s.style.display=on?'flex':'none'});
+    if(v==='students')renderStudents(); if(v==='log')renderLog(); if(v==='register')renderReg();
+  }
+
+  /* NFC */
+  var hasNFC=('NDEFReader' in window);
+  if(!hasNFC)$('nfc-warn').hidden=false;
+  var reader=null, mode='gate', pendingReg=null, writing=false;
+
+  async function startReader(){
+    if(!hasNFC){setScan(false,'NFC not available here','Use “Simulate a tap” below, or open this page in Chrome on Android.');return;}
+    if(reader)return;
+    try{
+      reader=new NDEFReader();
+      await reader.scan();
+      reader.onreadingerror=function(){setScan(true,'Could not read that card','Hold it still against the back of the phone and try again.')};
+      reader.onreading=function(ev){onTag(normUid(ev.serialNumber),ev.message)};
+      setScan(true,'Ready. Tap a card','Hold the card flat against the back of the phone for a second.');
+      $('start').hidden=true;
+    }catch(err){
+      reader=null;
+      setScan(false,'Reader could not start',(err&&err.name==='NotAllowedError')?'Allow NFC access when Chrome asks, and make sure NFC is on in your phone settings.':'Check that NFC is switched on in your phone settings, then try again.');
+    }
+  }
+  function setScan(on,t,p){$('scan').classList.toggle('on',on);$('scan-title').textContent=t;$('scan-text').textContent=p}
+
+  function readText(message){
+    try{for(var r of message.records){if(r.recordType==='text'){return new TextDecoder(r.encoding||'utf-8').decode(r.data)}}}catch(e){}
+    return '';
+  }
+
+  async function onTag(uid,message){
+    if(writing)return;
+    if(mode==='register'&&pendingReg){await linkCard(uid);return;}
+    gateTap(uid,readText(message||{records:[]}));
+  }
+
+  async function linkCard(uid){
+    var s=db.students.find(function(x){return x.id===pendingReg});
+    db.students.forEach(function(x){if(x.uid===uid)x.uid=''});
+    s.uid=uid; save();
+    $('reg-status').textContent='Card '+uid.toUpperCase()+' linked to '+s.name+'. Writing the student ID onto the card…';
+    if(hasNFC&&reader){
+      writing=true;
+      try{await reader.write({records:[{recordType:'text',data:s.id}]});$('reg-status').textContent='Done. Card '+uid.toUpperCase()+' is now '+s.name+"'s card, with "+s.id+' written on it.';}
+      catch(e){$('reg-status').textContent='Card '+uid.toUpperCase()+' is linked to '+s.name+'. Writing the ID on the card did not work, but the gate will still recognise it by its serial number.';}
+      writing=false;
+    }
+    pendingReg=null; mode='gate'; $('reg-btn').disabled=false;
+    if(navigator.vibrate)navigator.vibrate(120);
+  }
+
+  function gateTap(uid,text){
+    var s=db.students.find(function(x){return x.uid&&x.uid===uid})||(text&&db.students.find(function(x){return x.id===text}));
+    var html, entry;
+    if(!s){
+      html='<div class="result stop"><div class="verdict">Unknown card</div><p>Card <span class="uid">'+esc(uid.toUpperCase()||'no serial')+'</span> is not linked to any student. Link it in “Register card”.</p></div>';
+      entry={t:now(),txt:'Unknown card '+uid.toUpperCase()+' refused'};
+      buzz(false);
+    } else if(s.exeat==='approved'){
+      s.exeat='out'; s.outAt=now();
+      html=resultHtml(s,'ok','Allowed out','Exeat: '+s.reason+'. Due back '+s.due+'.',
+        'Adzesua: '+s.name+' left school at '+s.outAt+' on an approved exeat ('+s.reason+'). Due back '+s.due+'.');
+      entry={t:now(),txt:s.name+' tapped OUT ('+s.reason+')'};
+      buzz(true);
+    } else if(s.exeat==='out'){
+      s.exeat='none'; s.reason=''; s.due='';
+      html=resultHtml(s,'back','Welcome back','Exeat closed. Return recorded.',
+        'Adzesua: '+s.name+' is back in school. Returned at '+now()+'.');
+      entry={t:now(),txt:s.name+' tapped IN, exeat closed'};
+      buzz(true);
+    } else {
+      html=resultHtml(s,'stop','No exeat. Stop','This student has no approved exeat. Send them to the housemaster.','');
+      entry={t:now(),txt:s.name+' refused, no exeat'};
+      buzz(false);
+    }
+    db.log.unshift(entry); db.log=db.log.slice(0,100); save();
+    $('result').innerHTML=html;
+    $('result').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function resultHtml(s,cls,verdict,detail,sms){
+    return '<div class="result '+cls+'"><div class="verdict">'+esc(verdict)+'</div>'+
+      '<div class="who"><div class="avatar">'+esc(initials(s.name))+'</div><div><div class="n">'+esc(s.name)+'</div><div class="muted">'+esc(s.form)+', '+esc(s.house)+' · '+esc(s.id)+'</div></div></div>'+
+      '<p>'+esc(detail)+'</p>'+
+      (sms?'<div class="sms"><b>SMS to '+esc(s.parent)+' (simulated)</b>'+esc(sms)+'</div>':'')+
+      '<p class="muted">Card <span class="uid">'+esc(s.uid.toUpperCase())+'</span></p></div>';
+  }
+  function buzz(ok){if(navigator.vibrate)navigator.vibrate(ok?[80]:[200,80,200])}
+
+  /* views */
+  function renderSim(){
+    var linked=db.students.filter(function(s){return s.uid});
+    $('sim-uid').innerHTML=linked.map(function(s){return '<option value="'+esc(s.uid)+'">'+esc(s.name)+' ('+esc(s.uid.toUpperCase())+')</option>'}).join('')+'<option value="de:ad:be:ef">An unregistered card</option>';
+  }
+  function renderStudents(){
+    $('students').innerHTML=db.students.map(function(s,i){
+      var pill=s.exeat==='approved'?'<span class="pill ap">Exeat approved</span>':s.exeat==='out'?'<span class="pill out">Out of school</span>':'<span class="pill none">No exeat</span>';
+      var btn=s.exeat==='none'?'<button class="switch" data-i="'+i+'" data-a="approve" type="button">Approve exeat</button>':s.exeat==='approved'?'<button class="switch" data-i="'+i+'" data-a="cancel" type="button">Cancel</button>':'';
+      return '<div class="item"><div class="avatar" style="width:44px;height:44px;font-size:16px;border-radius:12px">'+esc(initials(s.name))+'</div><div class="grow"><div style="font-weight:600">'+esc(s.name)+'</div><div class="muted" style="font-size:13px">'+(s.uid?'Card '+esc(s.uid.toUpperCase()):'No card linked')+'</div><div style="margin-top:6px">'+pill+'</div></div>'+btn+'</div>';
+    }).join('');
+    $('students').querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){
+      var s=db.students[+b.dataset.i];
+      if(b.dataset.a==='approve'){s.exeat='approved';s.reason='Weekend exeat';s.due='Sunday, 6:00 pm';}else{s.exeat='none';s.reason='';s.due='';}
+      save();renderStudents();
+    })});
+  }
+  function renderLog(){
+    $('log').innerHTML=db.log.length?db.log.map(function(e){return '<div class="item"><div class="grow">'+esc(e.txt)+'<div class="t">'+esc(e.t)+'</div></div></div>'}).join(''):'<p class="muted">No taps yet.</p>';
+  }
+  function renderReg(){
+    $('reg-student').innerHTML=db.students.map(function(s){return '<option value="'+esc(s.id)+'">'+esc(s.name)+(s.uid?' (has card '+esc(s.uid.toUpperCase())+')':'')+'</option>'}).join('');
+  }
+
+  $('start').addEventListener('click',startReader);
+  $('sim-btn').addEventListener('click',function(){gateTap($('sim-uid').value,'')});
+  $('reg-btn').addEventListener('click',async function(){
+    pendingReg=$('reg-student').value; mode='register';
+    if(!hasNFC){$('reg-status').textContent='NFC is not available in this browser, so a card cannot be linked here.';mode='gate';pendingReg=null;return;}
+    await startReader();
+    if(!reader){mode='gate';pendingReg=null;return;}
+    $('reg-btn').disabled=true;
+    $('reg-status').textContent='Now tap the blank card on the back of the phone…';
+  });
+  $('reset').addEventListener('click',function(){db=JSON.parse(JSON.stringify(DEFAULT));save();renderStudents();renderSim();$('result').innerHTML='';});
+
+  var origSave=save; save=function(){origSave();renderSim()};
+  renderSim();
+})();
+</script>
+</body>
+</html>
