@@ -22,6 +22,11 @@ service cloud.firestore {
       allow read: if hasRole(['Admin']) || (signedIn() && email() == inviteEmail);
       allow write: if hasRole(['Admin']);
     }
+    // People who signed in without an invitation ask for access here; admins review them in Setup.
+    match /requests/{uid} {
+      allow create, update: if signedIn() && request.auth.uid == uid;
+      allow read, delete: if hasRole(['Admin']) || (signedIn() && request.auth.uid == uid);
+    }
     match /members/{uid} {
       allow read: if isMember() || (signedIn() && request.auth.uid == uid);
       allow create: if hasRole(['Admin'])

@@ -127,8 +127,11 @@
       S0.ownerUid = ownerSnap.data().uid;
       let m = null; try { m = await fs.doc('members/' + u.uid).get(); } catch (e) { m = null; }
       if (!m || !m.exists) {
-        let inv = null; try { inv = await fs.doc('invites/' + email).get(); } catch (e) { inv = null; }
-        if (!inv || !inv.exists) throw { code: 'no-access' };
+        let inv = null, check = 'not-found'; try { inv = await fs.doc('invites/' + email).get(); } catch (e) { inv = null; check = 'denied:' + (e && e.code); }
+        if (!inv || !inv.exists) {
+          try { await fs.doc('requests/' + u.uid).set({ id: u.uid, email, name: u.displayName || S0.pendingName || '', provider: (u.providerData && u.providerData[0] && u.providerData[0].providerId) || 'password', check, at: new Date().toISOString() }); } catch (e) { }
+          throw { code: 'no-access' };
+        }
         const d = inv.data();
         await fs.doc('members/' + u.uid).set({ id: u.uid, role: d.role, staffId: d.staffId || '', name: u.displayName || S0.pendingName || d.name || email, email, joinedAt: new Date().toISOString() });
       }

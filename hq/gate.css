@@ -76,6 +76,7 @@ body.gated .shell { visibility: hidden; }
 .g-msg { text-align: left; } .g-msg h2 { font-size: 22px; } .g-msg p { margin: 0; color: #33433D; font-size: 14.5px; line-height: 1.55; }
 .g-msg code { font-size: 12.5px; background: var(--g-chalk); padding: 1px 6px; border-radius: 5px; }
 .g-badge { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; background: #FDF0CF; color: #7A5100; font: 700 20px var(--font-display); }
+.g-small { font-size: 13px !important; color: var(--g-muted) !important; }
 .g-actions { display: flex; gap: 10px; margin-top: 4px; }
 .g-state { display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; color: var(--g-muted); font-size: 14px; }
 .g-pulse { width: 64px; height: 64px; animation: g-breathe 1.6s ease-in-out infinite; } .g-pulse svg { width: 100%; height: 100%; }

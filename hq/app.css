@@ -465,3 +465,6 @@ main { flex: 1; overflow-y: auto; outline: none; }
   .grid2 > .panel, .grid3 > .panel { min-width: 0; }
   .doc { min-width: 0; padding: 18px; } .docparties { grid-template-columns: 1fr; gap: 10px; } .dochead { flex-direction: column; } .docmeta { text-align: left; }
 }
+.reqs { margin-top: 14px; padding: 14px; border: 1px solid var(--gold); border-radius: 10px; background: var(--gold-soft); }
+.reqs h3 { font-size: 14px; margin-bottom: 4px; }
+.reqs .li { flex-wrap: wrap; }
