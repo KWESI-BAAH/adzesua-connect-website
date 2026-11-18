@@ -1,0 +1,142 @@
+rules_version = '2';
+// Adzesua HQ — Firestore security rules. Generated from js/roles.js; paste into
+// Firebase console → Firestore Database → Rules, then Publish.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function ownerDoc() { return /databases/$(database)/documents/config/owner; }
+    function memberDoc() { return /databases/$(database)/documents/members/$(request.auth.uid); }
+    function isOwner() { return signedIn() && exists(ownerDoc()) && get(ownerDoc()).data.uid == request.auth.uid; }
+    function isMember() { return isOwner() || (signedIn() && exists(memberDoc())); }
+    function role() { return isOwner() ? 'Admin' : (signedIn() && exists(memberDoc()) ? get(memberDoc()).data.role : 'none'); }
+    function hasRole(rs) { return isMember() && role() in rs; }
+    function email() { return request.auth.token.email.lower(); }
+
+    // The first person to sign in becomes the owner (Managing Director).
+    match /config/owner {
+      allow read: if signedIn();
+      allow create: if signedIn() && !exists(ownerDoc()) && request.resource.data.uid == request.auth.uid;
+    }
+    // Invitations: the owner/admins invite by email; the invited person may read their own.
+    match /invites/{inviteEmail} {
+      allow read: if hasRole(['Admin']) || (signedIn() && email() == inviteEmail);
+      allow write: if hasRole(['Admin']);
+    }
+    match /members/{uid} {
+      allow read: if isMember() || (signedIn() && request.auth.uid == uid);
+      allow create: if hasRole(['Admin'])
+        || (signedIn() && request.auth.uid == uid
+            && exists(/databases/$(database)/documents/invites/$(email()))
+            && request.resource.data.role == get(/databases/$(database)/documents/invites/$(email())).data.role);
+      allow update, delete: if hasRole(['Admin']);
+    }
+    match /settings/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'Finance', 'HR']);
+    }
+    match /schools/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev']);
+    }
+    match /contacts/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev']);
+    }
+    match /deals/{id} {
+      allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'Auditor', 'Viewer']);
+      allow write: if hasRole(['Admin', 'BizDev']);
+    }
+    match /activities/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR']);
+    }
+    match /batches/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev', 'Ops']);
+    }
+    match /cards/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']);
+    }
+    match /devices/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'Ops']);
+    }
+    match /items/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'Finance', 'Ops']);
+    }
+    match /moves/{id} {
+      allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'Auditor']);
+      allow write: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']);
+    }
+    match /suppliers/{id} {
+      allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Auditor']);
+      allow write: if hasRole(['Admin', 'Finance', 'Ops']);
+    }
+    match /purchases/{id} {
+      allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Auditor']);
+      allow write: if hasRole(['Admin', 'Finance', 'Ops']);
+    }
+    match /sales/{id} {
+      allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'Auditor']);
+      allow write: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent']);
+    }
+    match /expenses/{id} {
+      allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Auditor']);
+      allow write: if hasRole(['Admin', 'BizDev', 'Finance']);
+    }
+    match /journals/{id} {
+      allow read: if hasRole(['Admin', 'Finance', 'HR', 'Auditor']);
+      allow write: if hasRole(['Admin', 'Finance', 'HR']);
+    }
+    match /staff/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'HR']);
+    }
+    match /products/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin']);
+    }
+    match /accounts/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin']);
+    }
+    match /departments/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'HR']);
+    }
+    match /leave/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR', 'Viewer']);
+    }
+    match /staffpay/{id} {
+      allow read: if hasRole(['Admin', 'Finance', 'HR']);
+      allow write: if hasRole(['Admin', 'Finance', 'HR']);
+    }
+    match /payruns/{id} {
+      allow read: if hasRole(['Admin', 'Finance', 'HR']);
+      allow write: if hasRole(['Admin', 'Finance', 'HR']);
+    }
+    match /advances/{id} {
+      allow read: if hasRole(['Admin', 'Finance', 'HR']);
+      allow write: if hasRole(['Admin', 'Finance', 'HR']);
+    }
+    match /tickets/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']);
+    }
+    match /projects/{id} {
+      allow read: if isMember();
+      allow write: if hasRole(['Admin', 'BizDev', 'Ops']);
+    }
+    match /budgets/{id} {
+      allow read: if hasRole(['Admin', 'Finance', 'Auditor']);
+      allow write: if hasRole(['Admin', 'Finance']);
+    }
+    match /assets/{id} {
+      allow read: if hasRole(['Admin', 'Finance', 'Ops', 'Auditor']);
+      allow write: if hasRole(['Admin', 'Finance']);
+    }
+  }
+}
