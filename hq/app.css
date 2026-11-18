@@ -424,3 +424,44 @@ main { flex: 1; overflow-y: auto; outline: none; }
 .pm.e { background: var(--good-soft); color: var(--good); } .pm.v { background: var(--info-soft); color: var(--info); } .pm.n { color: var(--muted); }
 .invite { margin-top: 14px; padding: 14px; border: 1px dashed var(--line); border-radius: 10px; background: var(--surface2); }
 .invite h3 { font-size: 14px; margin-bottom: 10px; }
+
+/* ---------- form visibility fix ---------- */
+.fld[hidden] { display: none !important; }
+
+/* ---------- phones ---------- */
+@media (max-width: 640px) {
+  .tw:has(> .dt.cardify) { background: none; border: 0; overflow: visible; }
+  .pb > .tw:has(> .dt.cardify) { margin: 0; }
+  .dt.cardify, .dt.cardify tbody, .dt.cardify tfoot { display: block; }
+  .dt.cardify thead { display: none; }
+  .dt.cardify tr { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; position: relative; }
+  .dt.cardify td { display: contents; border: 0; padding: 0; }
+  .dt.cardify td::before { content: attr(data-label); color: var(--muted); font-size: 12px; padding: 3px 0; }
+  .dt.cardify td > *, .dt.cardify td { font-size: 13.5px; }
+  .dt.cardify td.lead::before { display: none; }
+  .dt.cardify td.lead { display: block; grid-column: 1 / -1; font-size: 15px; padding-bottom: 6px; margin-bottom: 4px; border-bottom: 1px solid var(--line2); }
+  .dt.cardify td.lead .block { display: inline; margin-left: 6px; }
+  .dt.cardify td:not(.lead) { text-align: right; }
+  .dt.cardify td:not(.lead):not(.selc) { display: block; grid-column: 2; padding: 3px 0; text-align: right; }
+  .dt.cardify td:not(.lead):not(.selc)::before { position: absolute; left: 14px; }
+  .dt.cardify td.selc { display: block; position: absolute; top: 12px; right: 12px; width: auto; }
+  .dt.cardify td.selc::before { display: none; }
+  .dt.cardify tr.click:hover td { background: none; }
+  .dt.cardify tfoot tr { background: var(--surface2); }
+  .dt.cardify td:empty { display: none; }
+  .kanban, .kanban.wide { grid-template-columns: none; grid-auto-flow: column; grid-auto-columns: 82%; scroll-snap-type: x mandatory; padding: 12px; }
+  .kanban.wide { padding: 0 0 8px; }
+  .kcol { scroll-snap-align: start; }
+  .phead h1 { font-size: 22px; }
+  .pact { width: 100%; } .pact .btn { flex: 1 1 auto; justify-content: center; }
+  .toolbar .fsel { flex: 1 1 45%; } .toolbar .fsel select { max-width: none; width: 100%; }
+  .tile .tv { font-size: 20px; }
+  .mcard { max-height: 100%; border-radius: 14px 14px 0 0; align-self: end; }
+  #modal.open { padding: 0; place-items: end center; }
+  .mfoot .btn { flex: 1 1 auto; justify-content: center; }
+  .bulkbar { position: static; }
+  .top { gap: 8px; } .gsearch input::placeholder { color: transparent; }
+  .lt-table { min-width: 560px; }
+  .grid2 > .panel, .grid3 > .panel { min-width: 0; }
+  .doc { min-width: 0; padding: 18px; } .docparties { grid-template-columns: 1fr; gap: 10px; } .dochead { flex-direction: column; } .docmeta { text-align: left; }
+}
