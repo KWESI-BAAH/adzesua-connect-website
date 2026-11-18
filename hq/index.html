@@ -78,6 +78,9 @@
         <p id="gErr" class="g-err" role="alert" hidden></p>
         <p id="gOk" class="g-ok" role="status" hidden></p>
         <button id="gSubmit" class="g-btn" type="submit"><span data-label>Continue</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg><i class="g-spin" aria-hidden="true"></i></button>
+        <div class="g-or" data-show="signin signup"><span>or</span></div>
+        <button type="button" id="gGoogle" class="g-btn ghost g-google" data-show="signin signup"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 12h8.6M16.5 6.4A8.9 8.9 0 0 0 12 3"/></svg><span>Continue with Google</span></button>
+        <p class="g-hint" data-show="signup">Signing up with Google? Use the Google account for the email address you were invited with.</p>
         <p class="g-switch" data-show="signin">New to the team? <a href="#" data-gate="signup">Create your account</a></p>
         <p class="g-switch" data-show="signup reset">Already have an account? <a href="#" data-gate="signin">Sign in</a></p>
       </form>

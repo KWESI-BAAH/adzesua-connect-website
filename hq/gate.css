@@ -66,6 +66,11 @@ body.gated .shell { visibility: hidden; }
 .g-spin { display: none; width: 18px; height: 18px; border: 2.5px solid rgba(255, 255, 255, .35); border-top-color: #fff; border-radius: 50%; animation: g-rot .7s linear infinite; }
 .g-btn.loading svg { display: none; } .g-btn.loading .g-spin { display: block; }
 @keyframes g-rot { to { transform: rotate(360deg); } }
+.g-or { display: flex; align-items: center; gap: 12px; color: #9AA6A1; font-size: 12px; text-transform: uppercase; letter-spacing: .12em; margin: 2px 0; }
+.g-or::before, .g-or::after { content: ""; flex: 1; height: 1px; background: var(--g-line); }
+.g-google svg { width: 19px; height: 19px; stroke: var(--g-green); stroke-width: 2; fill: none; stroke-linecap: round; }
+.g-btn.ghost:hover svg { transform: none; }
+.g-hint { margin: -4px 0 0; font-size: 12.5px; color: var(--g-muted); text-align: center; }
 .g-switch { margin: 2px 0 0; text-align: center; font-size: 14px; color: var(--g-muted); }
 .g-foot { margin: 0; text-align: center; font-size: 12.5px; color: #7D8B85; line-height: 1.6; }
 .g-msg { text-align: left; } .g-msg h2 { font-size: 22px; } .g-msg p { margin: 0; color: #33433D; font-size: 14.5px; line-height: 1.55; }

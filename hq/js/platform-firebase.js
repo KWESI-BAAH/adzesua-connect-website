@@ -39,6 +39,10 @@
     'auth/weak-password': 'Use at least 8 characters for your password.',
     'auth/network-request-failed': 'No internet connection. Check your data or Wi-Fi and try again.',
     'auth/missing-password': 'Enter your password.',
+    'auth/unauthorized-domain': 'Google sign-in is not allowed on this web address yet. In Firebase → Authentication → Settings → Authorized domains, add this site’s domain.',
+    'auth/account-exists-with-different-credential': 'This email already signs in another way. Use your email and password instead.',
+    'auth/operation-not-allowed': 'This sign-in method is turned off in Firebase → Authentication → Sign-in method.',
+    'auth/popup-blocked': 'Your browser blocked the Google window. Allow pop-ups for this site and try again.',
   };
   const friendly = e => FRIENDLY[e && e.code] || (e && e.message) || 'Something went wrong. Try again.';
 
@@ -49,6 +53,7 @@
     g('gForm').addEventListener('submit', onSubmit);
     document.querySelectorAll('[data-gate]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); gateMode(a.dataset.gate); }));
     const eye = g('gEye'); if (eye) eye.addEventListener('click', () => { const p = g('gPass'); const show = p.type === 'password'; p.type = show ? 'text' : 'password'; eye.setAttribute('aria-pressed', show); eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); });
+    const gg = g('gGoogle'); if (gg) gg.addEventListener('click', googleSignIn);
     const out = g('gSignOut'); if (out) out.addEventListener('click', () => firebase.auth().signOut().then(() => location.reload()));
   });
 
@@ -83,6 +88,22 @@
       busy(false, mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset link');
       const box = g('gErr'); box.textContent = friendly(err); box.hidden = false;
     }
+  }
+
+  async function googleSignIn() {
+    const btn = g('gGoogle'); const err = g('gErr'); err.hidden = true; btn.disabled = true; btn.querySelector('span').textContent = 'Opening Google…';
+    try {
+      const auth = firebase.auth(); const p = new firebase.auth.GoogleAuthProvider(); p.setCustomParameters({ prompt: 'select_account' });
+      await auth.setPersistence(firebase.auth.Auth.Persistence.LOCAL);
+      let cred;
+      try { cred = await auth.signInWithPopup(p); }
+      catch (e) { if (e && (e.code === 'auth/popup-blocked' || e.code === 'auth/operation-not-supported-in-this-environment')) { await auth.signInWithRedirect(p); return; } throw e; }
+      S0.pendingName = cred.user.displayName || '';
+      await establish(cred.user);
+    } catch (e) {
+      if (e && e.code === 'no-access') { gateMode('noaccess'); const em = g('gNoEmail'); if (em) em.textContent = (firebase.auth().currentUser || {}).email || ''; return; }
+      if (!(e && (e.code === 'auth/popup-closed-by-user' || e.code === 'auth/cancelled-popup-request'))) { err.textContent = friendly(e); err.hidden = false; }
+    } finally { btn.disabled = false; btn.querySelector('span').textContent = 'Continue with Google'; }
   }
 
   if (!configured) {
