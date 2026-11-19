@@ -29,5 +29,9 @@ const COLL_PAGES = { schools: ['schools'], contacts: ['contacts'], deals: ['pipe
 /* pages whose data a role may READ (wider than edit: a page shows related records) */
 const COLL_READ_PAGES = { sales: ['sales', 'wifi', 'card-registry', 'reports', 'ledger', 'journal', 'tax'], expenses: ['expenses', 'reports', 'ledger', 'journal', 'tax'], purchases: ['purchases', 'inventory', 'suppliers', 'reports', 'ledger', 'journal'], journals: ['journal', 'ledger', 'reports', 'tax'], budgets: ['budgets'], assets: ['assets', 'reports', 'ledger'], moves: ['inventory', 'cards', 'reports', 'ledger'], suppliers: ['suppliers', 'purchases', 'inventory'], deals: ['pipeline', 'schools'], staffpay: ['payroll'], payruns: ['payroll'], advances: ['payroll'] };
 /* everything not listed above is readable by every member: schools, contacts, staff, departments, cards, batches, devices, items, tickets, projects, activities, leave, products, accounts, settings */
+/* Deleting money records is limited to these roles; Campus Agents may add sales but not change them later. */
+const MONEY_COLLS = ['sales', 'expenses', 'purchases', 'journals', 'payruns', 'advances', 'assets', 'budgets', 'accounts', 'products'];
+const MONEY_DELETERS = ['Admin', 'Finance', 'HR'];
+const CREATE_ONLY = { sales: ['Agent'] };
 const PAYROLL_ROLES = Object.keys(ROLES).filter(r => ROLES[r].payroll);
-if (typeof module !== 'undefined') module.exports = { ROLES, ROLE_LABEL, ROLE_DESC, COLL_PAGES, COLL_READ_PAGES, ALL_PAGES, PAYROLL_ROLES };
+if (typeof module !== 'undefined') module.exports = { MONEY_COLLS, MONEY_DELETERS, CREATE_ONLY, ROLES, ROLE_LABEL, ROLE_DESC, COLL_PAGES, COLL_READ_PAGES, ALL_PAGES, PAYROLL_ROLES };

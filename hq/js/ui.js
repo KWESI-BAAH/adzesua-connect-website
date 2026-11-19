@@ -12,6 +12,7 @@ const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
 /* ---------- delegated events ---------- */
 document.addEventListener('click', e => {
+  if (e.target.closest('a[target="_blank"]')) return;
   const el = e.target.closest('[data-act]');
   if (!el || el.disabled) return;
   const fn = ACT[el.dataset.act];
@@ -211,7 +212,7 @@ function openForm(key, rec = {}, opts = {}) {
   const title = opts.title || `${isNew ? 'New' : 'Edit'} ${E.label.toLowerCase()}`;
   openModal(`<form id="eform" novalidate><div class="mhead"><h2>${esc(title)}</h2>${opts.sub ? `<p class="muted">${opts.sub}</p>` : ''}<button type="button" class="icbtn x" data-act="closeModal" aria-label="Close">×</button></div>
     <div class="mbody"><div class="fgrid">${fields.map(f => fieldHtml(f, rec)).join('')}</div><p class="ferr" role="alert"></p></div>
-    <div class="mfoot">${!isNew && E.coll && !opts.noDelete ? `<button type="button" class="btn ghost danger-t" data-act="formDelete">${ic('trash', 15)} Delete</button>` : ''}<span class="tspace"></span><button type="button" class="btn ghost" data-act="closeModal">Cancel</button>${E.coll && typeof canWriteColl === 'function' && !canWriteColl(E.coll) ? '<span class="muted small">View only for your role</span>' : ''}<button type="submit" class="btn primary" ${!APP.canWrite || (E.coll && typeof canWriteColl === 'function' && !canWriteColl(E.coll)) ? 'disabled' : ''}>${esc(opts.okLabel || (isNew ? 'Create' : 'Save changes'))}</button></div></form>`, opts.size || E.size || '');
+    <div class="mfoot">${!isNew && E.coll && !opts.noDelete && (typeof canDeleteColl !== 'function' || canDeleteColl(E.coll)) ? `<button type="button" class="btn ghost danger-t" data-act="formDelete">${ic('trash', 15)} Delete</button>` : ''}<span class="tspace"></span><button type="button" class="btn ghost" data-act="closeModal">Cancel</button>${E.coll && typeof canWriteColl === 'function' && !canWriteColl(E.coll) ? '<span class="muted small">View only for your role</span>' : ''}<button type="submit" class="btn primary" ${!APP.canWrite || (E.coll && typeof canWriteColl === 'function' && !canWriteColl(E.coll)) ? 'disabled' : ''}>${esc(opts.okLabel || (isNew ? 'Create' : 'Save changes'))}</button></div></form>`, opts.size || E.size || '');
   setTimeout(recalcForm, 0);
 }
 document.addEventListener('submit', async e => {
@@ -253,7 +254,7 @@ function barChart({ labels, series, height = 220, fmt = v => fmtMoney(v), id = '
       const v = Math.max(0, s.values[i] || 0); const h = Math.max(v > 0 ? 2 : 0, ih * v / nice); const x = gx + j * (bw + 2); const y = padT + ih - h;
       const r = Math.min(4, h / 2, bw / 2);
       const path = h > 0 ? `M${x},${y + h}V${y + r}Q${x},${y} ${x + r},${y}H${x + bw - r}Q${x + bw},${y} ${x + bw},${y + r}V${y + h}Z` : '';
-      g += `<path d="${path}" fill="${s.color}" class="bar"/><rect x="${gx - 4}" y="${padT}" width="${(bw + 2) * series.length + 8}" height="${ih}" fill="transparent" data-tip="<b>${esc(lab)}</b>${series.map(ss => `<div><i style='background:${ss.color}'></i>${esc(ss.name)} <b>${esc(fmt(ss.values[i] || 0))}</b></div>`).join('')}"/>`;
+      g += `<path d="${path}" fill="${s.color}" class="bar"/><rect x="${gx - 4}" y="${padT}" width="${(bw + 2) * series.length + 8}" height="${ih}" fill="transparent" data-tip="${esc(`<b>${esc(lab)}</b>${series.map(ss => `<div><i style='background:${ss.color}'></i>${esc(ss.name)} <b>${esc(fmt(ss.values[i] || 0))}</b></div>`).join('')}`)}"/>`;
     });
     g += `<text x="${padL + gw * i + gw / 2}" y="${H - 8}" class="axis" text-anchor="middle">${esc(lab)}</text>`;
   });
@@ -264,13 +265,13 @@ function barChart({ labels, series, height = 220, fmt = v => fmtMoney(v), id = '
 function hbars(items, fmt = v => fmtMoney(v)) {
   const max = Math.max(1, ...items.map(i => i.value));
   if (!items.length) return '<p class="muted small">No data yet.</p>';
-  return `<div class="hbars">${items.map(i => `<div class="hb" data-tip="<b>${esc(i.label)}</b><div>${esc(fmt(i.value))}</div>"><span class="hbl">${esc(i.label)}</span><span class="hbt"><span class="hbf" style="width:${Math.max(1, 100 * i.value / max)}%;background:${i.color || 'var(--c1)'}"></span></span><span class="hbv">${esc(fmt(i.value))}</span></div>`).join('')}</div>`;
+  return `<div class="hbars">${items.map(i => `<div class="hb" data-tip="${esc(`<b>${esc(i.label)}</b><div>${esc(fmt(i.value))}</div>`)}"><span class="hbl">${esc(i.label)}</span><span class="hbt"><span class="hbf" style="width:${Math.max(1, 100 * i.value / max)}%;background:${i.color || 'var(--c1)'}"></span></span><span class="hbv">${esc(fmt(i.value))}</span></div>`).join('')}</div>`;
 }
 function niceMax(v) { if (v <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(v))); const n = v / p; return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 2.5 ? 2.5 : n <= 5 ? 5 : 10) * p; }
 function shortMoney(v) { if (v >= 1e6) return (v / 1e6).toFixed(v % 1e6 ? 1 : 0) + 'm'; if (v >= 1e3) return (v / 1e3).toFixed(v % 1e3 ? 1 : 0) + 'k'; return fmtNum(v); }
 function stageBar(stages, counts) {
   const total = sum(stages, s => counts[s] || 0) || 1;
-  return `<div class="stagebar">${stages.map((s, i) => `<div class="sb" style="flex:${Math.max(0.0001, counts[s] || 0)}" data-tip="<b>${esc(s)}</b><div>${counts[s] || 0}</div>"><span style="opacity:${0.35 + 0.65 * (i + 1) / stages.length}"></span></div>`).join('')}</div>`;
+  return `<div class="stagebar">${stages.map((s, i) => `<div class="sb" style="flex:${Math.max(0.0001, counts[s] || 0)}" data-tip="${esc(`<b>${esc(s)}</b><div>${counts[s] || 0}</div>`)}"><span style="opacity:${0.35 + 0.65 * (i + 1) / stages.length}"></span></div>`).join('')}</div>`;
 }
 
 /* ---------- files ---------- */

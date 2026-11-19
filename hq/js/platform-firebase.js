@@ -7,6 +7,8 @@
    Also drives the sign-in screen (#gate).
    ========================================================= */
 (function () {
+  /* Refuse to run inside another site's frame (clickjacking). */
+  if (window.top !== window.self) { try { window.top.location = window.self.location.href; } catch (e) { } document.documentElement.innerHTML = ''; return; }
   const cfg = window.ADZ_FIREBASE_CONFIG || {};
   const configured = !!(cfg.apiKey && cfg.projectId && !/PASTE/i.test(cfg.apiKey) && window.firebase);
   window.ADZ_PLATFORM = configured ? 'firebase' : 'unconfigured';
@@ -23,6 +25,7 @@
     gate.classList.add('ready'); gate.querySelectorAll('[data-show]').forEach(el => { el.hidden = !el.dataset.show.split(' ').includes(mode); });
     const err = g('gErr'); if (err) { err.textContent = msg || ''; err.hidden = !msg; }
     const ok = g('gOk'); if (ok) { ok.hidden = true; }
+    ['gOk2'].forEach(i => { const x = g(i); if (x) x.hidden = true; }); const e2 = g('gErr2'); if (e2) { e2.textContent = mode === 'verify' ? (msg || '') : ''; e2.hidden = !(mode === 'verify' && msg); }
     if (mode === 'hidden') { gate.setAttribute('aria-hidden', 'true'); return; }
     gate.removeAttribute('aria-hidden');
     const first = gate.querySelector(`[data-show~="${mode}"] input:not([type=checkbox])`); if (first) setTimeout(() => first.focus(), 60);
@@ -39,6 +42,7 @@
     'auth/weak-password': 'Use at least 8 characters for your password.',
     'auth/network-request-failed': 'No internet connection. Check your data or Wi-Fi and try again.',
     'auth/missing-password': 'Enter your password.',
+    'not-verified': 'Your email is not confirmed yet. Open the link we sent, then try again.',
     'auth/unauthorized-domain': 'Google sign-in is not allowed on this web address yet. In Firebase → Authentication → Settings → Authorized domains, add this site’s domain.',
     'auth/account-exists-with-different-credential': 'This email already signs in another way. Use your email and password instead.',
     'auth/operation-not-allowed': 'This sign-in method is turned off in Firebase → Authentication → Sign-in method.',
@@ -49,11 +53,21 @@
   document.addEventListener('DOMContentLoaded', () => {
     if (!g('gate')) return;
     if (!configured) { gateMode('setup'); return; }
-    gateMode('checking');
+    gateMode(g('gate').dataset.mode || 'checking');
     g('gForm').addEventListener('submit', onSubmit);
     document.querySelectorAll('[data-gate]').forEach(a => a.addEventListener('click', e => { e.preventDefault(); gateMode(a.dataset.gate); }));
     const eye = g('gEye'); if (eye) eye.addEventListener('click', () => { const p = g('gPass'); const show = p.type === 'password'; p.type = show ? 'text' : 'password'; eye.setAttribute('aria-pressed', show); eye.setAttribute('aria-label', show ? 'Hide password' : 'Show password'); });
     const gg = g('gGoogle'); if (gg) gg.addEventListener('click', googleSignIn);
+    const vd = g('gVerified'); if (vd) vd.addEventListener('click', async () => {
+      const u = firebase.auth().currentUser; if (!u) return gateMode('signin');
+      vd.disabled = true;
+      try { await u.reload(); await u.getIdToken(true); estP = null; await establish(firebase.auth().currentUser); }
+      catch (e) { if (e && e.code === 'verify') { gateMode('verify', FRIENDLY['not-verified']); g('gVEmail').textContent = u.email; } else if (e && e.code === 'no-access') { g('gNoEmail').textContent = u.email; gateMode('noaccess'); } else gateMode('verify', friendly(e)); }
+      finally { vd.disabled = false; }
+    });
+    const rs = g('gResend'); if (rs) rs.addEventListener('click', async () => { const u = firebase.auth().currentUser; if (!u) return; try { await u.sendEmailVerification(); const ok = g('gOk2'); ok.textContent = 'A new link is on its way to ' + u.email + '. Check spam too.'; ok.hidden = false; } catch (e) { const er = g('gErr2'); er.textContent = friendly(e); er.hidden = false; } });
+    const so2 = g('gSignOut2'); if (so2) so2.addEventListener('click', () => firebase.auth().signOut().then(() => location.reload()));
+    const chk = g('gCheck'); if (chk) chk.addEventListener('click', () => location.reload());
     const out = g('gSignOut'); if (out) out.addEventListener('click', () => firebase.auth().signOut().then(() => location.reload()));
   });
 
@@ -75,6 +89,7 @@
         const cred = await auth.createUserWithEmailAndPassword(email, pass);
         await cred.user.updateProfile({ displayName: name });
         S0.pendingName = name;
+        try { await cred.user.sendEmailVerification(); } catch (e) { }
         await establish(cred.user);
       } else if (mode === 'reset') {
         busy(true, 'Sending…');
@@ -84,6 +99,7 @@
         return;
       }
     } catch (err) {
+      if (err && err.code === 'verify') { showVerify(email); return; }
       if (err && err.code === 'no-access') { const em = g('gNoEmail'); if (em) em.textContent = email; busy(false, 'Create account'); gateMode('noaccess'); return; }
       busy(false, mode === 'signin' ? 'Sign in' : mode === 'signup' ? 'Create account' : 'Send reset link');
       const box = g('gErr'); box.textContent = friendly(err); box.hidden = false;
@@ -106,6 +122,8 @@
     } finally { btn.disabled = false; btn.querySelector('span').textContent = 'Continue with Google'; }
   }
 
+  function showVerify(email) { const v = g('gVEmail'); if (v) v.textContent = email || ''; gateMode('verify'); }
+
   if (!configured) {
     window.claude = { use: () => new Promise(() => { }) };
     return;
@@ -114,13 +132,16 @@
   firebase.initializeApp(cfg);
   const auth = firebase.auth(); const fs = firebase.firestore();
 
-  async function establish(u) {
+  let estP = null, estUid = null;
+  function establish(u) { if (!estP || estUid !== u.uid) { estUid = u.uid; estP = establishInner(u); estP.catch(() => { estP = null; }); } return estP; }
+  async function establishInner(u) {
     if (S0.established === u.uid) return;
     const email = (u.email || '').toLowerCase();
     const ownerRef = fs.doc('config/owner');
     let ownerSnap = await ownerRef.get();
     if (!ownerSnap.exists) {
-      await ownerRef.set({ uid: u.uid, email, at: new Date().toISOString() });
+      if (!u.emailVerified) throw { code: 'verify' };
+      await ownerRef.set({ uid: u.uid, at: new Date().toISOString() });
       await fs.doc('members/' + u.uid).set({ id: u.uid, role: 'Admin', name: u.displayName || S0.pendingName || email, email, joinedAt: new Date().toISOString() });
       S0.ownerUid = u.uid; await seed(u);
     } else {
@@ -132,6 +153,7 @@
           try { await fs.doc('requests/' + u.uid).set({ id: u.uid, email, name: u.displayName || S0.pendingName || '', provider: (u.providerData && u.providerData[0] && u.providerData[0].providerId) || 'password', check, at: new Date().toISOString() }); } catch (e) { }
           throw { code: 'no-access' };
         }
+        if (!u.emailVerified) throw { code: 'verify' };
         const d = inv.data();
         await fs.doc('members/' + u.uid).set({ id: u.uid, role: d.role, staffId: d.staffId || '', name: u.displayName || S0.pendingName || d.name || email, email, joinedAt: new Date().toISOString() });
       }
@@ -148,7 +170,8 @@
     if (!u) { if (S0.established) location.reload(); else gateMode('signin'); return; }
     try { await establish(u); }
     catch (e) {
-      if (e && e.code === 'no-access') { const em = g('gNoEmail'); if (em) em.textContent = u.email; gateMode('noaccess'); }
+      if (e && e.code === 'verify') showVerify(u.email);
+      else if (e && e.code === 'no-access') { const em = g('gNoEmail'); if (em) em.textContent = u.email; gateMode('noaccess'); }
       else gateMode('signin', friendly(e));
     }
   });

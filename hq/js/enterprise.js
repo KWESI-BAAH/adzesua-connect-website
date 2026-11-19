@@ -14,6 +14,8 @@ function myRole() {
 const perm = key => key === 'dashboard' ? ((ROLES[myRole()] || {}).dashboard || 'v') : (ROLES[myRole()] || {})[key];
 function allowed(key) { return !!perm(key); }
 function pageWritable() { return perm(route().nav) === 'e'; }
+function canDeleteColl(c) { const r = myRole(); if (r === 'Admin') return true; if (!canWriteColl(c)) return false; if (MONEY_COLLS.includes(c)) return MONEY_DELETERS.includes(r); return r !== 'Agent'; }
+function canUpdateColl(c) { return canWriteColl(c) && !((CREATE_ONLY[c] || []).includes(myRole())); }
 function canWriteColl(c) { if (myRole() === 'Admin') return true; return (COLL_PAGES[c] || []).some(k => perm(k) === 'e'); }
 const seesMoney = () => allowed('reports');
 const NAMES = {}; let namesPending = false;

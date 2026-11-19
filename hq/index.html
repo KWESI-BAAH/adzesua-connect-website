@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex, nofollow, noarchive">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0B5B45">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://apis.google.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com wss://*.firebaseio.com https://*.firebaseapp.com; frame-src https://*.firebaseapp.com https://*.web.app https://accounts.google.com https://apis.google.com; img-src 'self' data: blob: https://*.googleusercontent.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; object-src 'none'; base-uri 'none'; form-action 'self'">
 <title>Adzesua HQ</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230B5B45'/%3E%3Ccircle cx='24' cy='40' r='12' fill='none' stroke='white' stroke-width='6.5'/%3E%3Cpath d='M36.5 23v29h6' fill='none' stroke='white' stroke-width='6.5'/%3E%3Ccircle cx='51' cy='25' r='4.5' fill='%23F5B21A'/%3E%3Cpath d='M44 18a9.5 9.5 0 0 1 14 0' fill='none' stroke='%23F5B21A' stroke-width='3.2' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -85,12 +86,23 @@
         <p class="g-switch" data-show="signup reset">Already have an account? <a href="#" data-gate="signin">Sign in</a></p>
       </form>
 
+      <!-- password sign-up: confirm email first -->
+      <div class="g-card g-msg" data-show="verify">
+        <div class="g-badge">✉</div>
+        <h2>Confirm your email</h2>
+        <p>We sent a link to <b id="gVEmail"></b>. Open it to prove the address is yours, then come back and press <b>I've confirmed it</b>. Check your spam folder if you can't see it.</p>
+        <p id="gErr2" class="g-err" role="alert" hidden></p>
+        <p id="gOk2" class="g-ok" role="status" hidden></p>
+        <div class="g-actions"><button class="g-btn" type="button" id="gVerified"><span>I've confirmed it</span></button><button class="g-btn ghost" type="button" id="gResend"><span>Send the link again</span></button></div>
+        <p class="g-switch"><a href="#" id="gSignOut2">Use a different account</a></p>
+      </div>
+
       <!-- signed in, not invited -->
       <div class="g-card g-msg" data-show="noaccess">
         <div class="g-badge">!</div>
         <h2>You're signed in, but not on the team list yet</h2>
         <p>Signed in as <b id="gNoEmail"></b>. Your request has been sent to the administrator. Once they give you access, press <b>Check again</b>.</p><p class="g-small">Invited with a different email? Sign out and sign in with that one.</p>
-        <div class="g-actions"><button class="g-btn" type="button" onclick="location.reload()"><span>Check again</span></button><button class="g-btn ghost" type="button" id="gSignOut"><span>Sign out</span></button></div>
+        <div class="g-actions"><button class="g-btn" type="button" id="gCheck"><span>Check again</span></button><button class="g-btn ghost" type="button" id="gSignOut"><span>Sign out</span></button></div>
       </div>
 
       <!-- not configured -->

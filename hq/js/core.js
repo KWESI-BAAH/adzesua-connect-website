@@ -135,6 +135,7 @@ async function save(c, rec) {
   if (typeof canWriteColl === 'function' && !canWriteColl(c)) throw { message: 'Your role can view these records but not change them.' };
   const id = rec.id || uid();
   const prev = get(c, id);
+  if (prev && typeof canUpdateColl === 'function' && !canUpdateColl(c)) throw { message: 'Your role can add these records but not change them once saved.' };
   const data = clean(Object.assign({}, rec, { id, updatedAt: nowISO(), createdAt: (prev && prev.createdAt) || rec.createdAt || nowISO(), createdBy: (prev && prev.createdBy) || rec.createdBy || APP.uid || '' }));
   S[c].set(id, data); invalidate(); scheduleRender();
   if (!APP.db) return id;
@@ -144,7 +145,7 @@ async function save(c, rec) {
 }
 async function removeRec(c, id) {
   if (!APP.canWrite) throw { message: 'You can view but not edit these records.' };
-  if (typeof canWriteColl === 'function' && !canWriteColl(c)) throw { message: 'Your role can view these records but not change them.' };
+  if (typeof canDeleteColl === 'function' && !canDeleteColl(c)) throw { message: 'Your role cannot delete these records. Ask Finance or the administrator.' };
   const prev = get(c, id); S[c].delete(id); invalidate(); scheduleRender();
   if (!APP.db) return;
   try { await withRetry(() => APP.db.collection(c).doc(id).delete()); }
@@ -325,6 +326,6 @@ function parseCSV(text) {
   if (cell !== '' || row.length) { row.push(cell); rows.push(row); }
   return rows.filter(r => r.some(c => c.trim() !== ''));
 }
-function toCSV(rows) { return rows.map(r => r.map(v => { const s = String(v ?? ''); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n'); }
+function toCSV(rows) { return rows.map(r => r.map(v => { let s = String(v ?? ''); if (typeof v === 'string' && /^[=+\-@\t\r]/.test(s)) s = "'" + s; return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n'); }
 
 if (typeof module !== 'undefined') module.exports = { S, APP, COLLS, ledger, balances, pnl, balanceSheet, inventory, saleTotal, saleStatus, purchaseLanded, invalidate, accounts, parseCSV, nextCardNumbers, settings, monthlySeries };
