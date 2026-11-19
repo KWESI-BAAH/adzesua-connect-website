@@ -16,7 +16,7 @@ service cloud.firestore {
     function hasRole(rs) { return isMember() && role() in rs; }
     function validRole(r) { return r in ['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR', 'Auditor', 'Viewer']; }
     // Every record carries its own id; a write may not smuggle in a different one.
-    function okDoc() { return request.resource.data.id == id; }
+    function okDoc(docId) { return request.resource.data.id == docId; }
     function shortText(v, n) { return v == null || (v is string && v.size() <= n); }
 
     // The first person to sign in with a verified email becomes the owner (Managing Director).
@@ -59,158 +59,158 @@ service cloud.firestore {
     }
     match /schools/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev']);
     }
     match /contacts/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev']);
     }
     match /deals/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'Auditor', 'Viewer']);
-      allow create: if hasRole(['Admin', 'BizDev']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev']);
     }
     match /activities/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'HR']);
     }
     match /batches/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Ops']);
     }
     match /cards/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Ops']);
     }
     match /devices/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Ops']);
     }
     match /items/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance', 'Ops']);
     }
     match /moves/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'Auditor']);
-      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']);
     }
     match /suppliers/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Auditor']);
-      allow create: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance', 'Ops']);
     }
     match /purchases/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Auditor']);
-      allow create: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance']);
     }
     match /sales/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'Auditor']);
-      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance']);
     }
     match /expenses/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance', 'Auditor']);
-      allow create: if hasRole(['Admin', 'BizDev', 'Finance']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Finance']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Finance']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Finance']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance']);
     }
     match /journals/{id} {
       allow read: if hasRole(['Admin', 'Finance', 'HR', 'Auditor']);
-      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance', 'HR']);
     }
     match /staff/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'HR']);
     }
     match /products/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin']) && okDoc();
-      allow update: if hasRole(['Admin']) && okDoc();
+      allow create: if hasRole(['Admin']) && okDoc(id);
+      allow update: if hasRole(['Admin']) && okDoc(id);
       allow delete: if hasRole(['Admin']);
     }
     match /accounts/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin']) && okDoc();
-      allow update: if hasRole(['Admin']) && okDoc();
+      allow create: if hasRole(['Admin']) && okDoc(id);
+      allow update: if hasRole(['Admin']) && okDoc(id);
       allow delete: if hasRole(['Admin']);
     }
     match /departments/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'HR']);
     }
     match /leave/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR', 'Viewer']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR', 'Viewer']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR', 'Viewer']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'Agent', 'HR', 'Viewer']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Finance', 'Ops', 'HR', 'Viewer']);
     }
     match /staffpay/{id} {
       allow read: if hasRole(['Admin', 'Finance', 'HR']);
-      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance', 'HR']);
     }
     match /payruns/{id} {
       allow read: if hasRole(['Admin', 'Finance', 'HR']);
-      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance', 'HR']);
     }
     match /advances/{id} {
       allow read: if hasRole(['Admin', 'Finance', 'HR']);
-      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance', 'HR']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance', 'HR']);
     }
     match /tickets/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Ops', 'Agent']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Ops']);
     }
     match /projects/{id} {
       allow read: if isMember();
-      allow create: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc();
-      allow update: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc();
+      allow create: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'BizDev', 'Ops']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'BizDev', 'Ops']);
     }
     match /budgets/{id} {
       allow read: if hasRole(['Admin', 'Finance', 'Auditor']);
-      allow create: if hasRole(['Admin', 'Finance']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance']);
     }
     match /assets/{id} {
       allow read: if hasRole(['Admin', 'Finance', 'Ops', 'Auditor']);
-      allow create: if hasRole(['Admin', 'Finance']) && okDoc();
-      allow update: if hasRole(['Admin', 'Finance']) && okDoc();
+      allow create: if hasRole(['Admin', 'Finance']) && okDoc(id);
+      allow update: if hasRole(['Admin', 'Finance']) && okDoc(id);
       allow delete: if hasRole(['Admin', 'Finance']);
     }
   }
