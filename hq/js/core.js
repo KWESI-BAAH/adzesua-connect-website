@@ -3,7 +3,7 @@
    Adzesua OS — core: state, data store, utilities, engines
    ========================================================= */
 
-const APP = { db: null, user: null, downloads: null, canWrite: true, ready: false, offline: false, uid: null, me: null, version: 0, loadNote: '' };
+const APP = { writeIssue: null, db: null, user: null, downloads: null, canWrite: true, ready: false, offline: false, uid: null, me: null, version: 0, loadNote: '' };
 const COLLS = ['schools', 'contacts', 'deals', 'activities', 'batches', 'cards', 'devices', 'items', 'moves', 'suppliers', 'purchases', 'sales', 'expenses', 'journals', 'staff', 'products', 'accounts', 'settings', 'departments', 'leave', 'staffpay', 'payruns', 'advances', 'tickets', 'projects', 'budgets', 'assets', 'members', 'invites', 'requests'];
 const S = {};
 COLLS.forEach(c => (S[c] = new Map()));
@@ -89,7 +89,7 @@ async function connect() {
   } catch (e) { APP.db = null; }
   if (APP.user) {
     try { APP.uid = await APP.user.id(); } catch (e) { }
-    try { const w = APP.user.can && APP.user.can('data.write'); if (w === false) APP.canWrite = false; } catch (e) { }
+    try { const w = APP.user.can && APP.user.can('data.write'); if (w === false) { APP.canWrite = false; APP.writeIssue = { reason: 'role' }; } } catch (e) { }
     try { APP.me = await APP.user.me(); } catch (e) { }
   }
   if (!APP.db) { APP.offline = true; APP.ready = true; clearTimeout(timer); scheduleRender(); return; }
@@ -104,7 +104,7 @@ async function connect() {
       invalidate(); scheduleRender();
     }, err => {
       pending.delete(c);
-      if (err && err.code === 'revoked') APP.canWrite = false;
+      if (err && err.code === 'revoked') { APP.canWrite = false; APP.writeIssue = { reason: 'session', coll: c }; }
       APP.loadNote = 'Some records could not be loaded (' + (err && err.code || 'error') + '). Reopen the page to try again.';
       if (pending.size === 0) { APP.ready = true; clearTimeout(timer); }
       scheduleRender();
@@ -125,7 +125,7 @@ async function withRetry(fn) {
 }
 function errText(e) {
   const code = e && e.code;
-  if (code === 'invalid_argument') return 'You do not have permission to change records here, or the record is too large.';
+  if (code === 'invalid_argument') return 'The database refused this change. Your role may not allow it.';
   if (code === 'quota_exceeded') return 'The data store is full. Delete old records before adding more.';
   if (code === 'revoked') return 'Your access to this page changed. Reopen it to continue.';
   return (e && e.message) || 'Something went wrong saving. Try again.';
@@ -140,7 +140,7 @@ async function save(c, rec) {
   S[c].set(id, data); invalidate(); scheduleRender();
   if (!APP.db) return id;
   try { await withRetry(() => APP.db.collection(c).doc(id).set(data)); }
-  catch (e) { if (prev) S[c].set(id, prev); else S[c].delete(id); invalidate(); scheduleRender(); if (e && e.code === 'invalid_argument') APP.canWrite = false; throw { message: errText(e) }; }
+  catch (e) { if (prev) S[c].set(id, prev); else S[c].delete(id); invalidate(); scheduleRender(); if (e && e.code === 'invalid_argument') { APP.writeIssue = { reason: 'refused', coll: c, at: new Date().toLocaleTimeString() }; scheduleRender(); throw { message: `The database refused to save this (${c}). Your role may not allow it, or the database rules need publishing again.` }; } throw { message: errText(e) }; }
   return id;
 }
 async function removeRec(c, id) {

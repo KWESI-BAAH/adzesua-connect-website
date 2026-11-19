@@ -49,7 +49,10 @@ function banners() {
   const b = [];
   if (APP.offline) b.push(`<div class="banner warn">Your records could not be reached from this view. Open this page in claude.ai while signed in to load and save data.</div>`);
   if (APP.loadNote) b.push(`<div class="banner warn">${esc(APP.loadNote)}</div>`);
-  if (!APP.canWrite && !APP.offline) b.push(`<div class="banner info">You have view-only access. Ask the administrator if you need to make changes.</div>`);
+  const wi = APP.writeIssue;
+  if (wi && wi.reason === 'session') b.push(`<div class="banner warn">Your sign-in session expired, so changes are paused. <button class="btn ghost sm" data-act="reloadPage">Reload</button></div>`);
+  else if (wi && wi.reason === 'refused') b.push(`<div class="banner warn">The database refused a change to <b>${esc(wi.coll)}</b> at ${esc(wi.at)}. Other changes still work. If this keeps happening, the Firebase rules may need publishing again. <button class="btn ghost sm" data-act="dismissIssue">Dismiss</button></div>`);
+  else if (!APP.canWrite && !APP.offline) b.push(`<div class="banner info">You have view-only access. Ask the administrator if you need to make changes.</div>`);
   if (APP.busy) b.push(`<div class="banner info"><b>${esc(APP.busy.label)}</b> ${APP.busy.done} of ${APP.busy.total}<div class="prog"><span style="width:${100 * APP.busy.done / Math.max(1, APP.busy.total)}%"></span></div></div>`);
   if (!APP.ready && !APP.offline) b.push(`<div class="banner info loading">Loading your records…</div>`);
   return b.join('');
@@ -67,6 +70,8 @@ function render() {
   document.title = `${PAGE_TITLE ? PAGE_TITLE + ' · ' : ''}Adzesua OS`;
   if (fid) { const el = document.getElementById(fid); if (el) { el.focus(); try { if (ss != null) el.setSelectionRange(ss, ss); } catch (e) { } } }
 }
+ACT.reloadPage = () => location.reload();
+ACT.dismissIssue = () => { APP.writeIssue = null; scheduleRender(); };
 ACT.navToggle = () => document.body.classList.toggle('navopen');
 
 /* ---------- global search & quick create ---------- */
