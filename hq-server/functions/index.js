@@ -207,7 +207,7 @@ exports.smsWelcome = onCall(withKey, async req => {
   const roleText = `${(ROLE_LABEL[role] || role).replace(' (Admin)', '').replace(' (read-only)', '')} (${ROLE_SHORT[role] || 'your team pages'})`;
   const em = String(rec.email || email).replace(/[^\w.@+-]/g, '');
   const text = joined
-    ? `Hi${first ? ' ' + first : ''}, welcome to Adzesua Connect! You now have access to Adzesua HQ as ${roleText}. Sign in with ${em} here:\n${HQ_URL}\n (press Check again if you are already on the page).\nKeep the link private.`
+    ? `Hi${first ? ' ' + first : ''}, welcome to Adzesua Connect! You now have access to Adzesua HQ as ${roleText}. Sign in with ${em} here (or press Check again if the page is already open):\n${HQ_URL}\nKeep the link private.`
     : `Hi${first ? ' ' + first : ''}, welcome to Adzesua Connect! You have been added to Adzesua HQ as ${roleText}.\nTo sign in:\n1. Open this link:\n${HQ_URL}\n2. Tap Continue with Google if ${em} is a Gmail/Google account, otherwise tap Create your account and set a password\n3. Use this exact email: ${em}\nKeep the link private.`;
   const cfg = await getConfig();
   return deliver({ cfg, to: [phone], message: text, kind: 'welcome', by: me.uid, byName: me.name, ref: { coll: joined ? 'members' : 'invites', id: joined ? uid : email } });
