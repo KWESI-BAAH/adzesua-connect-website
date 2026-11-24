@@ -88,7 +88,7 @@ VIEWS.sms = () => {
 
   const log = panel('Message log', logs.length ? dataTable({ id: 'smsLog', rows: logs, cols: [
     { k: 'at', label: 'When', f: r => `<span class="nowrap">${fmtDate(r.at)}</span><span class="muted small block">${esc(String(r.at || '').slice(11, 16))}</span>` },
-    { k: 'kind', label: 'Type', f: r => pill(({ manual: 'Message', receipt: 'Receipt', reminder: 'Reminder', access: 'Security', summary: 'Summary', test: 'Test' })[r.kind] || r.kind || '', r.kind === 'access' ? 'gold' : 'info') },
+    { k: 'kind', label: 'Type', f: r => pill(({ manual: 'Message', receipt: 'Receipt', reminder: 'Reminder', access: 'Security', summary: 'Summary', test: 'Test', welcome: 'Welcome' })[r.kind] || r.kind || '', r.kind === 'access' ? 'gold' : 'info') },
     { k: 'to', label: 'To', v: r => (r.to || []).join(' '), f: r => `${esc(smsShow((r.to || [])[0]))}${(r.count || 0) > 1 ? ` <span class="muted small">+${r.count - 1} more</span>` : ''}${r.ref && r.ref.number ? `<span class="muted small block">${esc(r.ref.number)}</span>` : ''}` },
     { k: 'message', label: 'Message', f: r => `<span class="small">${esc(String(r.message || '').slice(0, 140))}${String(r.message || '').length > 140 ? '…' : ''}</span>` },
     { k: 'status', label: 'Status', f: r => pill(({ sent: 'Sent', failed: 'Failed', blocked: 'Blocked', sending: 'Sending' })[r.status] || r.status, r.status === 'sent' ? 'good' : r.status === 'sending' ? 'mute' : 'bad') + (r.error ? `<span class="muted small block">${esc(String(r.error).slice(0, 120))}</span>` : '') },
@@ -206,3 +206,19 @@ function smsAutoReceipt(prev, s) {
   const ph = smsSalePhone(s); if (!ph) return;
   smsCall('smsReceipt', { saleId: s.id }).then(r => { if (r && r.sent) toast('Receipt texted to ' + smsShow(ph)); }).catch(e => toast('Receipt SMS not sent: ' + (e.message || 'error'), 'bad'));
 }
+
+/* ---------- welcome SMS for new team members (Admin) ---------- */
+const smsWelcomeReady = () => smsServer() && myRole() === 'Admin' && !!smsCfg().senderId;
+/* returns true if a text is being sent (so the caller can skip the copy-message fallback) */
+function smsWelcome(who, phone) {
+  if (!smsWelcomeReady() || !smsNorm(phone)) return false;
+  smsCall('smsWelcome', who).then(() => toast('Welcome SMS sent to ' + smsShow(smsNorm(phone)))).catch(e => toast('Welcome SMS not sent: ' + (e.message || 'error'), 'bad'));
+  return true;
+}
+ACT.inviteText = async el => {
+  const i = get('invites', el.dataset.id); if (!i) return;
+  const phone = i.phone || (get('staff', i.staffId) || {}).phone;
+  if (!smsNorm(phone)) return toast('No phone number on this invitation or their team record.', 'bad');
+  const ok = await ask({ title: 'Text the welcome message again?', body: `To <b>${esc(smsShow(smsNorm(phone)))}</b> with their role and how to sign in.`, ok: 'Send' });
+  if (ok) smsWelcome({ email: i.id }, phone);
+};

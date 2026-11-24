@@ -8,7 +8,7 @@ const { onSchedule } = require('firebase-functions/v2/scheduler');
 const { defineSecret } = require('firebase-functions/params');
 const { setGlobalOptions, logger } = require('firebase-functions/v2');
 const admin = require('firebase-admin');
-const { ROLES, LEGACY_ROLE, COLL_PAGES } = require('./roles.js');
+const { ROLES, LEGACY_ROLE, COLL_PAGES, ROLE_LABEL } = require('./roles.js');
 
 admin.initializeApp();
 const db = admin.firestore();
@@ -188,6 +188,29 @@ exports.smsAccessAlert = onCall(withKey, async req => {
   const d = r.data(); const who = String(d.name || '').replace(/[^\w .'-]/g, '').slice(0, 40); const em = String(d.email || '').replace(/[^\w.@+-]/g, '').slice(0, 60);
   try { return await deliver({ cfg, to: [cfg.alertPhone], message: `Adzesua HQ: ${who ? who + ' (' + em + ')' : em} signed in without an invitation and is asking for access. Review it in Setup.`, kind: 'access', ref: { coll: 'requests', id: req.auth.uid }, logId: 'access-' + req.auth.uid }); }
   catch (e) { return { skipped: true, reason: 'limit' }; }
+});
+
+/* ---------------- callable: welcome SMS for a new team member ---------------- */
+const HQ_URL = 'adzesuahq.web.app';
+const ROLE_SHORT = { Admin: 'full access to everything', BizDev: 'schools, pipeline, invoices and SMS', Finance: 'invoices, expenses, accounts and payroll', Ops: 'cards, devices, stock and support', Agent: 'Wi-Fi sales, cards and support at your school', HR: 'team, leave and payroll', Auditor: 'read-only books and reports', Viewer: 'dashboard, team directory and your leave' };
+exports.smsWelcome = onCall(withKey, async req => {
+  const me = await whoIs(req.auth); need(me.role === 'Admin', 'Only the administrator can do this.');
+  const email = String((req.data && req.data.email) || '').toLowerCase().slice(0, 200); const uid = String((req.data && req.data.uid) || '').slice(0, 128);
+  let rec = null, joined = false;
+  if (uid) { if (!/^[\w-]{1,128}$/.test(uid)) throw new HttpsError('invalid-argument', 'Which person?'); const m = await db.doc('members/' + uid).get(); if (m.exists) { rec = m.data(); joined = true; } }
+  else if (email) { if (email.includes('/')) throw new HttpsError('invalid-argument', 'Which person?'); const i = await db.doc('invites/' + email).get(); if (i.exists) rec = Object.assign({ email }, i.data()); }
+  if (!rec) throw new HttpsError('not-found', 'That invitation or member no longer exists.');
+  let phone = rec.phone;
+  if (!normPhone(phone) && rec.staffId) { const st = await db.doc('staff/' + String(rec.staffId).replace(/[^\w-]/g, '')).get(); if (st.exists) phone = st.data().phone; }
+  if (!normPhone(phone)) throw new HttpsError('failed-precondition', 'No valid phone number for this person. Add one on the invitation or their team record.');
+  const role = LEGACY_ROLE[rec.role] || rec.role; const first = String(rec.name || '').trim().split(/\s+/)[0].replace(/[^\w'-]/g, '').slice(0, 20);
+  const roleText = `${(ROLE_LABEL[role] || role).replace(' (Admin)', '').replace(' (read-only)', '')} (${ROLE_SHORT[role] || 'your team pages'})`;
+  const em = String(rec.email || email).replace(/[^\w.@+-]/g, '');
+  const text = joined
+    ? `Hi${first ? ' ' + first : ''}, welcome to Adzesua Connect! You now have access to Adzesua HQ as ${roleText}. Open ${HQ_URL} and sign in with ${em} (press Check again if you are already on the page). Keep the link private.`
+    : `Hi${first ? ' ' + first : ''}, welcome to Adzesua Connect! You have been added to Adzesua HQ as ${roleText}.\nTo sign in:\n1. Open ${HQ_URL}\n2. Tap Continue with Google if ${em} is a Gmail/Google account, otherwise tap Create your account and set a password\n3. Use this exact email: ${em}\nKeep the link private.`;
+  const cfg = await getConfig();
+  return deliver({ cfg, to: [phone], message: text, kind: 'welcome', by: me.uid, byName: me.name, ref: { coll: joined ? 'members' : 'invites', id: joined ? uid : email } });
 });
 
 /* ---------------- callable: admin tools ---------------- */
