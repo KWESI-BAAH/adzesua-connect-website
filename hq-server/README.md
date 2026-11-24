@@ -39,3 +39,13 @@ If asked how many days to keep container images, press Enter (the default keeps 
 
 To update later: `cd ~/adz && git pull && cd hq-server && firebase deploy --only functions,firestore:rules`.
 To change the Arkesel key: run the `secrets:set` line again, then deploy again.
+
+## Short link (Firebase Hosting)
+
+HQ is also served at https://adzesua-hq.web.app. Publish or update it with:
+
+```bash
+cd ~/adz && git pull && cd hq-server && firebase deploy --only hosting
+```
+
+The first time only, create the site: `firebase hosting:sites:create adzesua-hq`.
