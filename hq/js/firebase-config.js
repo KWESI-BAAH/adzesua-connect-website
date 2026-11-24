@@ -2,7 +2,7 @@
    These keys are public by design; your data is protected by firestore.rules. */
 window.ADZ_FIREBASE_CONFIG = {
   apiKey: 'AIzaSyDaPtydSAo_rLcejmcAd4D1DebBc0LnOk8',
-  authDomain: 'adzesua-hq-83a9f.firebaseapp.com',
+  authDomain: 'adzesuahq.web.app',
   projectId: 'adzesua-hq-83a9f',
   storageBucket: 'adzesua-hq-83a9f.firebasestorage.app',
   messagingSenderId: '391372154046',

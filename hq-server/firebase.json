@@ -4,7 +4,7 @@
     { "source": "functions", "codebase": "default", "runtime": "nodejs22", "ignore": ["node_modules", ".git", "*.log"] }
   ],
   "hosting": {
-    "site": "adzesua-hq",
+    "site": "adzesuahq",
     "public": "public",
     "predeploy": ["rm -rf \"$PROJECT_DIR/public\" && cp -r \"$PROJECT_DIR/../hq\" \"$PROJECT_DIR/public\" && rm -f \"$PROJECT_DIR/public/firestore.rules\""],
     "ignore": ["firebase.json", "**/.*"],
