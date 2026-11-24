@@ -150,7 +150,7 @@
       if (!m || !m.exists) {
         let inv = null, check = 'not-found'; try { inv = await fs.doc('invites/' + email).get(); } catch (e) { inv = null; check = 'denied:' + (e && e.code); }
         if (!inv || !inv.exists) {
-          try { await fs.doc('requests/' + u.uid).set({ id: u.uid, email, name: u.displayName || S0.pendingName || '', provider: (u.providerData && u.providerData[0] && u.providerData[0].providerId) || 'password', check, at: new Date().toISOString() }); } catch (e) { }
+          try { await fs.doc('requests/' + u.uid).set({ id: u.uid, email, name: u.displayName || S0.pendingName || '', provider: (u.providerData && u.providerData[0] && u.providerData[0].providerId) || 'password', check, at: new Date().toISOString() }); callFn('smsAccessAlert', {}).catch(() => { }); } catch (e) { }
           throw { code: 'no-access' };
         }
         if (!u.emailVerified) throw { code: 'verify' };
@@ -238,6 +238,16 @@
 
   window.claude = { use: async name => { await session; return name === 'db' ? db : name === 'user' ? user : name === 'downloads' ? downloads : null; } };
   window.ADZ_FS = fs; window.ADZ_SESSION = S0;
+  /* ---------- server functions (SMS gateway). The Arkesel key lives on the server, never here. ---------- */
+  function callFn(name, data) {
+    if (!firebase.functions) return Promise.reject({ code: 'unavailable', message: 'Server functions are not loaded.' });
+    return firebase.app().functions(window.ADZ_FN_REGION || 'europe-west1').httpsCallable(name, { timeout: 60000 })(data || {}).then(r => r.data).catch(e => {
+      const c = (e && e.code || '').replace('functions/', '');
+      const m = c === 'not-found' || c === 'internal' && /not.?found|404/i.test(e.message || '') ? 'The SMS server is not set up yet. Deploy the functions first (see the SMS page).' : (e && e.message) || 'The SMS server did not answer.';
+      throw { code: c, message: m };
+    });
+  }
+  window.ADZ_CALL = (name, data) => session.then(() => callFn(name, data));
 
   /* ---------- first-run records (written once, when the owner first signs in) ---------- */
   async function seed(u) {

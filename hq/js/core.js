@@ -4,7 +4,7 @@
    ========================================================= */
 
 const APP = { writeIssue: null, db: null, user: null, downloads: null, canWrite: true, ready: false, offline: false, uid: null, me: null, version: 0, loadNote: '' };
-const COLLS = ['schools', 'contacts', 'deals', 'activities', 'batches', 'cards', 'devices', 'items', 'moves', 'suppliers', 'purchases', 'sales', 'expenses', 'journals', 'staff', 'products', 'accounts', 'settings', 'departments', 'leave', 'staffpay', 'payruns', 'advances', 'tickets', 'projects', 'budgets', 'assets', 'members', 'invites', 'requests'];
+const COLLS = ['schools', 'contacts', 'deals', 'activities', 'batches', 'cards', 'devices', 'items', 'moves', 'suppliers', 'purchases', 'sales', 'expenses', 'journals', 'staff', 'products', 'accounts', 'settings', 'departments', 'leave', 'staffpay', 'payruns', 'advances', 'tickets', 'projects', 'budgets', 'assets', 'members', 'invites', 'requests', 'sms', 'smsconfig'];
 const S = {};
 COLLS.forEach(c => (S[c] = new Map()));
 

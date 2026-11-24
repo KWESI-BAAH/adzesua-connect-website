@@ -1,0 +1,11 @@
+{
+  "name": "adzesua-hq-functions",
+  "description": "Adzesua HQ server functions: SMS gateway (Arkesel)",
+  "private": true,
+  "main": "index.js",
+  "engines": { "node": "22" },
+  "dependencies": {
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^6.1.0"
+  }
+}

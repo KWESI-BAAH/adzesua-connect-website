@@ -1,12 +1,12 @@
 'use strict';
 /* Adzesua OS — roles and permissions (shared by the app and the Firestore rules generator) */
 /* Each role: page -> 'e' (view & edit) or 'v' (view only). Pages not listed are hidden. */
-const ALL_PAGES = ['dashboard', 'cards', 'card-registry', 'devices', 'schools', 'contacts', 'pipeline', 'activities', 'support', 'projects', 'wifi', 'sales', 'expenses', 'purchases', 'budgets', 'tax', 'reports', 'ledger', 'journal', 'team', 'leave', 'payroll', 'inventory', 'assets', 'suppliers', 'setup'];
+const ALL_PAGES = ['dashboard', 'cards', 'card-registry', 'devices', 'schools', 'contacts', 'pipeline', 'activities', 'support', 'projects', 'wifi', 'sales', 'expenses', 'purchases', 'budgets', 'tax', 'reports', 'ledger', 'journal', 'team', 'leave', 'payroll', 'inventory', 'assets', 'suppliers', 'sms', 'setup'];
 const P = (e, v) => Object.assign({}, ...v.map(k => ({ [k]: 'v' })), ...e.map(k => ({ [k]: 'e' })));
 const ROLES = {
   Admin: Object.fromEntries(ALL_PAGES.map(k => [k, 'e'])),
-  BizDev: P(['cards', 'card-registry', 'schools', 'contacts', 'pipeline', 'activities', 'support', 'projects', 'sales', 'expenses', 'leave'], ['dashboard', 'devices', 'wifi', 'inventory', 'team']),
-  Finance: P(['sales', 'expenses', 'purchases', 'budgets', 'tax', 'journal', 'assets', 'suppliers', 'inventory', 'payroll', 'activities', 'leave'], ['dashboard', 'reports', 'ledger', 'schools', 'contacts', 'cards', 'card-registry', 'wifi', 'projects', 'team']),
+  BizDev: P(['cards', 'card-registry', 'schools', 'contacts', 'pipeline', 'activities', 'support', 'projects', 'sales', 'expenses', 'leave', 'sms'], ['dashboard', 'devices', 'wifi', 'inventory', 'team']),
+  Finance: P(['sales', 'expenses', 'purchases', 'budgets', 'tax', 'journal', 'assets', 'suppliers', 'inventory', 'payroll', 'activities', 'leave', 'sms'], ['dashboard', 'reports', 'ledger', 'schools', 'contacts', 'cards', 'card-registry', 'wifi', 'projects', 'team']),
   Ops: P(['cards', 'card-registry', 'devices', 'inventory', 'purchases', 'suppliers', 'support', 'projects', 'wifi', 'activities', 'leave'], ['dashboard', 'schools', 'contacts', 'assets', 'team']),
   Agent: P(['wifi', 'card-registry', 'support', 'activities', 'leave'], ['dashboard', 'schools', 'cards', 'team']),
   HR: P(['team', 'leave', 'payroll', 'activities'], ['dashboard', 'projects']),
@@ -16,8 +16,8 @@ const ROLES = {
 const ROLE_LABEL = { Admin: 'Managing Director (Admin)', BizDev: 'Business Development', Finance: 'Finance & Accounts', Ops: 'Operations & Technical', Agent: 'Campus Agent', HR: 'HR & Admin', Auditor: 'Auditor / Board (read-only)', Viewer: 'Staff (basic)' };
 const ROLE_DESC = {
   Admin: 'Everything: all records, payroll, setup, roles and approvals.',
-  BizDev: 'Wins and looks after schools: pipeline, contacts, card programme, invoices and receipts, support, projects, own expense claims. No payroll, profit or bank balances.',
-  Finance: 'Keeps the books: invoices, expenses, purchases, budgets, VAT, journals, assets and payroll. Sees all reports. Share as Editor so payroll opens.',
+  BizDev: 'Wins and looks after schools: pipeline, contacts, card programme, invoices and receipts, support, projects, own expense claims, texting schools (SMS). No payroll, profit or bank balances.',
+  Finance: 'Keeps the books: invoices, expenses, purchases, budgets, VAT, journals, assets and payroll. Sees all reports. Can text receipts and payment reminders. Share as Editor so payroll opens.',
   Ops: 'Delivers the product: card printing and encoding, readers and devices, stock, purchasing, Wi-Fi, support tickets, rollout projects.',
   Agent: 'Works at a school: logs Wi-Fi sales, taps and looks up cards, records card fees and renewals, logs support issues.',
   HR: 'Team records, departments, leave approvals and payroll. Share as Editor so payroll opens.',
@@ -34,4 +34,4 @@ const MONEY_COLLS = ['sales', 'expenses', 'purchases', 'journals', 'payruns', 'a
 const MONEY_DELETERS = ['Admin', 'Finance', 'HR'];
 const CREATE_ONLY = { sales: ['Agent'] };
 const PAYROLL_ROLES = Object.keys(ROLES).filter(r => ROLES[r].payroll);
-if (typeof module !== 'undefined') module.exports = { MONEY_COLLS, MONEY_DELETERS, CREATE_ONLY, ROLES, ROLE_LABEL, ROLE_DESC, COLL_PAGES, COLL_READ_PAGES, ALL_PAGES, PAYROLL_ROLES };
+if (typeof module !== 'undefined') module.exports = { LEGACY_ROLE, MONEY_COLLS, MONEY_DELETERS, CREATE_ONLY, ROLES, ROLE_LABEL, ROLE_DESC, COLL_PAGES, COLL_READ_PAGES, ALL_PAGES, PAYROLL_ROLES };
