@@ -81,7 +81,7 @@ async function release(count, kind) {
 }
 
 async function arkesel(path, body) {
-  const key = ARKESEL_KEY.value();
+  const key = String(ARKESEL_KEY.value() || '').trim().replace(/^["']|["']$/g, '');
   if (!key) throw new HttpsError('failed-precondition', 'The Arkesel API key has not been set on the server yet.');
   const res = await fetch('https://sms.arkesel.com' + path, { method: body ? 'POST' : 'GET', headers: { 'api-key': key, 'Content-Type': 'application/json', Accept: 'application/json' }, body: body ? JSON.stringify(body) : undefined });
   let data = null; try { data = await res.json(); } catch (e) { data = null; }
