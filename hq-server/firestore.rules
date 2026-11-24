@@ -57,6 +57,22 @@ service cloud.firestore {
       allow read: if isMember();
       allow write: if hasRole(['Admin', 'Finance', 'HR']);
     }
+    // Activity log: anyone signed in may add an entry about themselves, stamped with the server's time.
+    // Nobody can edit or delete an entry; only the administrator can read them.
+    match /audit/{id} {
+      allow read: if hasRole(['Admin']);
+      allow create: if signedIn() && okDoc(id)
+        && request.resource.data.keys().hasOnly(['id', 'uid', 'email', 'name', 'role', 'action', 'coll', 'docId', 'label', 'changes', 'detail', 'ua', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.at == request.time
+        && request.resource.data.action in ['signin', 'signout', 'create', 'update', 'delete', 'refused', 'denied', 'download']
+        && shortText(request.resource.data.get('email', null), 200) && shortText(request.resource.data.get('name', null), 120)
+        && shortText(request.resource.data.get('role', null), 20) && shortText(request.resource.data.get('coll', null), 40)
+        && shortText(request.resource.data.get('docId', null), 128) && shortText(request.resource.data.get('label', null), 160)
+        && shortText(request.resource.data.get('changes', null), 1500) && shortText(request.resource.data.get('detail', null), 300)
+        && shortText(request.resource.data.get('ua', null), 160);
+      allow update, delete: if false;
+    }
     // SMS: only the server (Cloud Functions) writes the log and the daily counter.
     match /sms/{id} {
       allow read: if hasRole(['Admin', 'BizDev', 'Finance']);

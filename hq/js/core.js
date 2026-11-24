@@ -139,8 +139,8 @@ async function save(c, rec) {
   const data = clean(Object.assign({}, rec, { id, updatedAt: nowISO(), createdAt: (prev && prev.createdAt) || rec.createdAt || nowISO(), createdBy: (prev && prev.createdBy) || rec.createdBy || APP.uid || '' }));
   S[c].set(id, data); invalidate(); scheduleRender();
   if (!APP.db) return id;
-  try { await withRetry(() => APP.db.collection(c).doc(id).set(data)); }
-  catch (e) { if (prev) S[c].set(id, prev); else S[c].delete(id); invalidate(); scheduleRender(); if (e && e.code === 'invalid_argument') { APP.writeIssue = { reason: 'refused', coll: c, at: new Date().toLocaleTimeString() }; scheduleRender(); throw { message: `The database refused to save this (${c}). Your role may not allow it, or the database rules need publishing again.` }; } throw { message: errText(e) }; }
+  try { await withRetry(() => APP.db.collection(c).doc(id).set(data)); if (typeof auditWrite === 'function') auditWrite(prev ? 'update' : 'create', c, id, prev, data); }
+  catch (e) { if (prev) S[c].set(id, prev); else S[c].delete(id); invalidate(); scheduleRender(); if (e && e.code === 'invalid_argument') { if (typeof auditWrite === 'function') auditWrite('refused', c, id, prev, data); APP.writeIssue = { reason: 'refused', coll: c, at: new Date().toLocaleTimeString() }; scheduleRender(); throw { message: `The database refused to save this (${c}). Your role may not allow it, or the database rules need publishing again.` }; } throw { message: errText(e) }; }
   return id;
 }
 async function removeRec(c, id) {
@@ -148,8 +148,8 @@ async function removeRec(c, id) {
   if (typeof canDeleteColl === 'function' && !canDeleteColl(c)) throw { message: 'Your role cannot delete these records. Ask Finance or the administrator.' };
   const prev = get(c, id); S[c].delete(id); invalidate(); scheduleRender();
   if (!APP.db) return;
-  try { await withRetry(() => APP.db.collection(c).doc(id).delete()); }
-  catch (e) { if (prev) S[c].set(id, prev); invalidate(); scheduleRender(); throw { message: errText(e) }; }
+  try { await withRetry(() => APP.db.collection(c).doc(id).delete()); if (typeof auditWrite === 'function') auditWrite('delete', c, id, prev, null); }
+  catch (e) { if (prev) S[c].set(id, prev); invalidate(); scheduleRender(); if (e && e.code === 'invalid_argument' && typeof auditWrite === 'function') auditWrite('refused', c, id, prev, null); throw { message: errText(e) }; }
 }
 /* sequential bulk writer with progress */
 async function bulkSave(c, recs, onProgress) {

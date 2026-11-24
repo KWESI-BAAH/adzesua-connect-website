@@ -164,18 +164,31 @@
     fs.doc('members/' + u.uid).onSnapshot(s => { if (s.exists) S0.member = s.data(); else if (u.uid !== S0.ownerUid) location.reload(); }, () => { });
     const who = g('gWho'); if (who) who.textContent = S0.member.name || email;
     gateMode('hidden'); resolveSession(u);
+    try { const k = 'adz-signin-' + u.uid; if (!sessionStorage.getItem(k)) { sessionStorage.setItem(k, '1'); audit({ action: 'signin', detail: 'Signed in with ' + provOf(u) }); } } catch (e) { audit({ action: 'signin', detail: 'Signed in with ' + provOf(u) }); }
   }
+  /* ---------- activity log: append-only, readable by the administrator only ---------- */
+  function provOf(u) { const p = (u && u.providerData && u.providerData[0] && u.providerData[0].providerId) || 'password'; return p === 'google.com' ? 'Google' : 'email and password'; }
+  const cut = (v, n) => String(v == null ? '' : v).slice(0, n);
+  function audit(e) {
+    const u = auth.currentUser; if (!u) return Promise.resolve();
+    const ref = fs.collection('audit').doc(); const m = S0.member || {};
+    const rec = { id: ref.id, uid: u.uid, email: cut((u.email || '').toLowerCase(), 200), name: cut(m.name || u.displayName || u.email || '', 120), role: cut(u.uid === S0.ownerUid ? 'Admin' : (m.role || ''), 20),
+      action: cut(e.action, 20), coll: cut(e.coll || '', 40), docId: cut(e.docId || '', 128), label: cut(e.label || '', 160), changes: cut(e.changes || '', 1500), detail: cut(e.detail || '', 300),
+      ua: cut(navigator.userAgent.replace(/^Mozilla\/5\.0 /, ''), 160), at: firebase.firestore.FieldValue.serverTimestamp() };
+    return ref.set(rec).catch(() => { });
+  }
+  window.ADZ_AUDIT = audit;
 
   auth.onAuthStateChanged(async u => {
     if (!u) { if (S0.established) location.reload(); else gateMode('signin'); return; }
     try { await establish(u); }
     catch (e) {
       if (e && e.code === 'verify') showVerify(u.email);
-      else if (e && e.code === 'no-access') { const em = g('gNoEmail'); if (em) em.textContent = u.email; gateMode('noaccess'); }
+      else if (e && e.code === 'no-access') { const em = g('gNoEmail'); if (em) em.textContent = u.email; gateMode('noaccess'); audit({ action: 'denied', detail: 'Signed in with ' + provOf(u) + ' but is not on the team list' }); }
       else gateMode('signin', friendly(e));
     }
   });
-  window.ADZ_SIGNOUT = () => auth.signOut().then(() => location.reload());
+  window.ADZ_SIGNOUT = () => Promise.race([audit({ action: 'signout' }), new Promise(r => setTimeout(r, 1500))]).then(() => auth.signOut()).then(() => location.reload());
 
   /* ---------- db: Firestore behind the artifact db interface ---------- */
   const mapCode = c => ({ 'permission-denied': 'invalid_argument', 'invalid-argument': 'invalid_argument', 'resource-exhausted': 'resource_exhausted', 'unavailable': 'unavailable', 'deadline-exceeded': 'unavailable', 'unauthenticated': 'revoked' }[c] || 'unavailable');

@@ -1,7 +1,7 @@
 'use strict';
 /* Adzesua OS — roles and permissions (shared by the app and the Firestore rules generator) */
 /* Each role: page -> 'e' (view & edit) or 'v' (view only). Pages not listed are hidden. */
-const ALL_PAGES = ['dashboard', 'cards', 'card-registry', 'devices', 'schools', 'contacts', 'pipeline', 'activities', 'support', 'projects', 'wifi', 'sales', 'expenses', 'purchases', 'budgets', 'tax', 'reports', 'ledger', 'journal', 'team', 'leave', 'payroll', 'inventory', 'assets', 'suppliers', 'sms', 'setup'];
+const ALL_PAGES = ['dashboard', 'cards', 'card-registry', 'devices', 'schools', 'contacts', 'pipeline', 'activities', 'support', 'projects', 'wifi', 'sales', 'expenses', 'purchases', 'budgets', 'tax', 'reports', 'ledger', 'journal', 'team', 'leave', 'payroll', 'inventory', 'assets', 'suppliers', 'sms', 'audit', 'setup'];
 const P = (e, v) => Object.assign({}, ...v.map(k => ({ [k]: 'v' })), ...e.map(k => ({ [k]: 'e' })));
 const ROLES = {
   Admin: Object.fromEntries(ALL_PAGES.map(k => [k, 'e'])),
